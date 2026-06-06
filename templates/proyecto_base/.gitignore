@@ -1,0 +1,19 @@
+# Salidas regenerables del proyecto (versiona solo config.yaml + datos/ + secciones.md)
+resultados/
+informe/*.pdf
+informe/*.md
+!informe/secciones.md   # texto editable del consultor: SI se versiona
+
+# Binarios MODFLOW 6 / PEST sueltos
+*.hds
+*.cbc
+*.ucn
+*.grb
+*.lst
+*.jco
+*.jcb
+*.rec
+*.log
+
+# Conservar marcadores de carpeta
+!.gitkeep

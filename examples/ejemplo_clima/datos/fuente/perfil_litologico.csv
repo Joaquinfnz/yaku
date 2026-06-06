@@ -1,0 +1,4 @@
+layer,unidad,kx_m_d,kz_m_d,sy,ss,iconvert
+1,Relleno aluvial (acuifero libre),12.0,1.2,0.12,1e-05,1
+2,Lente de arcilla (acuitardo),0.2,0.01,0.03,0.0004,0
+3,Grava basal (acuifero confinado),7.0,0.7,0.07,1e-05,0

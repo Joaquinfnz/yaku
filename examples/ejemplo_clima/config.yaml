@@ -1,0 +1,38 @@
+# Ejemplo INTEGRADO clima-hidrogeologia (ejemplo_clima). Rutas relativas a esta carpeta.
+
+proyecto:
+  nombre: "ejemplo_clima"
+  descripcion: "Modelo hidrogeologico transiente acoplado a clima e hidrologia"
+  autor: "Joaquin Fernandez"
+  fecha: "2026-06-06"
+
+objetivos:
+  proposito: "Demostrar el flujo clima -> recarga -> modelo transiente -> indices clima-hidrogeologia."
+  tipo: "transient"
+  escala: "local"
+
+motor: "simple"
+
+rutas:
+  datos: "datos/tablas"
+  gis: "datos/gis"
+  resultados: "resultados"
+  informe: "informe"
+
+modelo:
+  name: "ejemplo_clima"
+  drapear_dem: true
+
+solver:
+  complexity: "MODERATE"
+
+informe:
+  perfil: "sea"
+  titulo: "Modelo hidrogeologico transiente acoplado a clima - ejemplo_clima"
+
+astm:
+  estandar: "D5447 / D5981"
+
+calibracion:
+  observaciones: "datos/tablas/observaciones_nivel.csv"
+  parametros: "datos/tablas/parametros_calibracion.csv"

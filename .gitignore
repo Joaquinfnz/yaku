@@ -1,0 +1,73 @@
+# --- Sistema operativo ---
+.DS_Store
+._*
+*.Rhistory
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.ipynb_checkpoints/
+build/
+dist/
+.venv/
+venv/
+.coverage
+htmlcov/
+
+# --- Office temporales ---
+~$*
+
+# --- Salidas de modelo MODFLOW 6 (binarios/listados, reproducibles) ---
+*.hds
+*.cbc
+*.ucn
+*.grb
+*.dis.grb
+*.lst
+*.bin
+*.cnc
+mfsim.lst
+
+# --- Salidas PEST / PEST++ (reproducibles desde .pst + datos) ---
+*.jco
+*.jcb
+*.rec
+*.rei
+*.rei[0-9]*
+*.sen
+*.isen
+*.svd
+*.cov
+*.par
+*.bpa
+*.iobj
+*.ipar
+*.fpr
+*.rid
+*.upg.csv
+
+# --- Resultados y salidas (cada proyecto regenera lo suyo) ---
+proyectos/*/resultados/
+proyectos/*/informe/*.pdf
+proyectos/*/informe/*.md
+examples/*/resultados/
+examples/*/informe/*.pdf
+examples/*/informe/*.md
+**/output/
+**/entregables_seia/
+
+# --- Logs ---
+*.log
+
+# Conservar marcadores de carpeta
+!.gitkeep
+
+# Tutorial en Word (.docx)
+Tutorial_mfworkflow.docx
+Tutorial_mfworkflow.pdf
+
+# Tutorial generado
+docs/_build/

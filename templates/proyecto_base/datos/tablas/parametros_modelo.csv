@@ -1,0 +1,11 @@
+clave,valor
+nlay,2
+nrow,20
+ncol,20
+delr,100.0
+delc,100.0
+top,60.0
+botm,0.0
+starting_head,55.0
+k,8.0
+recharge,0.0005

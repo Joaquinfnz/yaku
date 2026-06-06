@@ -1,0 +1,79 @@
+# Configuracion de modflow-setup (motor: mfsetup).
+# Solo se usa si en config.yaml pones  motor: "mfsetup".
+# Plantilla/esqueleto: completa con tus datos GIS reales (rasters de DEM/base de
+# capas y shapefiles). Referencia completa de campos:
+#   https://doi-usgs.github.io/modflow-setup/latest/config-file-gallery.html
+#
+# A diferencia del motor simple (CSV->FloPy), aqui la grilla y las propiedades se
+# derivan de datos geoespaciales nativos mapeados a la grilla, con version stamping.
+
+simulation:
+  sim_name: modelo
+  version: mf6
+  sim_ws: ../../resultados        # relativo a este YAML
+
+model:
+  simulation: modelo               # referencia a simulation.sim_name
+  modelname: modelo
+  options:
+    save_flows: true
+  packages:
+    - dis
+    - ic
+    - npf
+    - rcha
+    - chd
+    - oc
+
+# Grilla regular. Ajusta origen (xoff/yoff), CRS (epsg) y dimensiones a tu dominio.
+setup_grid:
+  xoff: 0.0
+  yoff: 0.0
+  rotation: 0.0
+  epsg: 32719                      # ej. UTM 19S (Chile); ajusta a tu zona
+  dxy: 100                         # tamano de celda (m)
+
+# Discretizacion temporal (steady-state por defecto; agrega periodos transientes)
+tdis:
+  options:
+    time_units: days
+  perioddata:
+    group 1:
+      perlen: 1
+      nper: 1
+      nstp: 1
+      steady: true
+
+# Discretizacion espacial. Para datos reales, reemplaza top/botm por rasters:
+#   source_data: {filename: ../gis/dem.tif}
+dis:
+  dimensions:
+    nlay: 1
+    nrow: 20
+    ncol: 20
+  griddata:
+    top: 60
+    botm: [0]
+
+ic:
+  griddata:
+    strt: 55
+
+npf:
+  griddata:
+    icelltype: 1
+    k: 8.0
+    k33: 1.5
+
+rcha:
+  recharge: 0.0005
+
+# Condiciones de borde desde shapefile (ejemplo CHD desde el dominio):
+# chd:
+#   source_data:
+#     shapefile: {filename: ../gis/dominio.geojson, id_column: id}
+#   head: 55
+
+oc:
+  period_options:
+    0: ['save head last', 'save budget last']

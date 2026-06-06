@@ -1,0 +1,45 @@
+# Configuracion del proyecto (rutas RELATIVAS a esta carpeta).
+# Generado desde templates/proyecto_base por `mfw new`. Los {{placeholders}}
+# se sustituyen al instanciar el proyecto.
+
+proyecto:
+  nombre: "{{nombre}}"
+  descripcion: "Modelo hidrogeologico - {{nombre}}"
+  autor: "{{autor}}"
+  fecha: "{{fecha}}"
+
+# --- Etapa 1 ASTM: proposito y objetivos del modelo ---
+objetivos:
+  proposito: "Describir el objetivo del modelo (ej. evaluar descensos por bombeo)"
+  tipo: "transient"      # steady | transient
+  escala: "local"        # local | regional
+
+# Motor de construccion: simple (CSV->FloPy) | mfsetup (modflow-setup, GIS)
+motor: "simple"
+
+# Rutas relativas al proyecto
+rutas:
+  datos: "datos/tablas"
+  gis: "datos/gis"
+  resultados: "resultados"
+  informe: "informe"
+
+modelo:
+  name: "{{nombre}}"
+
+solver:
+  complexity: "MODERATE"   # SIMPLE | MODERATE | COMPLEX
+
+# --- Etapa 7 ASTM: informe ---
+informe:
+  perfil: "astm"           # astm (generico internacional) | sea (SEIA Chile)
+  titulo: "Informe tecnico de modelacion de aguas subterraneas - {{nombre}}"
+
+# Trazabilidad del metodo (Etapas ASTM D5447 / D5981)
+astm:
+  estandar: "D5447 / D5981"
+
+# --- Etapas 4-6 ASTM: calibracion / sensibilidad / incertidumbre ---
+calibracion:
+  observaciones: "datos/tablas/observaciones_nivel.csv"
+  parametros: "datos/tablas/parametros_calibracion.csv"

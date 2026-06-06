@@ -1,0 +1,44 @@
+name: modflow-workflow
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  # --- Nucleo MODFLOW 6 / FloPy ---
+  - flopy>=3.9
+  - modflow6
+  # --- Calibracion / incertidumbre (stack USGS) ---
+  - pyemu
+  - pestpp
+  # --- Computo cientifico ---
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - tabulate
+  # --- GIS / preproceso ---
+  - geopandas
+  - rasterio
+  - shapely
+  - pyproj
+  - xarray
+  - netcdf4
+  # --- Visualizacion 3D ---
+  - pyvista
+  - trame
+  # --- Informes ---
+  - reportlab
+  - pillow
+  - openpyxl
+  # --- Terminal guiada (onboard) ---
+  - rich
+  - pyfiglet
+  - questionary
+  # --- Notebooks (material didactico) ---
+  - jupyterlab
+  - notebook
+  - pip
+  - pip:
+      # modflow-setup no siempre esta en conda-forge ARM64; se instala via pip.
+      - modflow-setup
+      # El propio paquete del workflow, editable:
+      - -e .

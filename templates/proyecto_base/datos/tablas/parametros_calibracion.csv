@@ -1,0 +1,6 @@
+nombre,tipo,archivo,campo,selector,valor_inicial,limite_inferior,limite_superior,transformacion,descripcion
+kx_layer_1,valor_capa,capas_modelo.csv,kx_m_d,layer=1,8.0,1.0,30.0,log,Conductividad horizontal capa 1
+kx_layer_2,valor_capa,capas_modelo.csv,kx_m_d,layer=2,1.5,0.1,10.0,log,Conductividad horizontal capa 2
+kz_layer_1,valor_capa,capas_modelo.csv,kz_m_d,layer=1,1.5,0.05,8.0,log,Conductividad vertical capa 1
+recharge_multiplier,multiplicador,recarga_periodos.csv,recharge_m_d,all,1.0,0.25,2.5,log,Multiplicador global de recarga
+river_cond_multiplier,multiplicador,rio.csv,cond_m2_d,all,1.0,0.2,5.0,log,Multiplicador global de conductancia de rio

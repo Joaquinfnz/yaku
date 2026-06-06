@@ -1,0 +1,5 @@
+nombre,layer,row,col,stress_period,head_observado_m,peso,grupo
+OBS_01,1,9,10,2,52.20,1.0,niveles
+OBS_02,1,8,8,2,53.10,1.0,niveles
+OBS_03,1,12,13,2,50.80,1.0,niveles
+OBS_04,2,12,13,2,49.50,0.8,niveles

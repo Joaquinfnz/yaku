@@ -1,0 +1,4 @@
+nombre,layer,row,col,stress_period,rate_m3_dia
+Pozo_01,1,9,10,1,-600.0
+Pozo_01,1,9,10,2,-300.0
+Pozo_02,2,12,13,1,-350.0

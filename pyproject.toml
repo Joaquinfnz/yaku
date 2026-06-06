@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mfworkflow"
+version = "0.1.0"
+description = "Workflow replicable de modelacion de aguas subterraneas MODFLOW 6 + FloPy (ASTM / SEIA Chile)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Joaquin Fernandez" }]
+keywords = ["modflow", "flopy", "groundwater", "hydrogeology", "pest", "ASTM", "SEIA"]
+
+# Dependencias de runtime instalables por pip. Los binarios pesados
+# (modflow6, pestpp) se instalan via conda-forge (ver environment.yml).
+dependencies = [
+    "flopy>=3.9,<4",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+gis = ["geopandas", "shapely", "rasterio", "pyproj"]
+calib = ["pyemu"]
+report = ["reportlab", "pillow", "python-docx"]
+viz3d = ["pyvista", "trame"]
+setup = ["modflow-setup"]
+tui = ["rich", "pyfiglet", "questionary"]
+dev = ["pytest", "pytest-cov"]
+all = [
+    "geopandas", "shapely", "rasterio", "pyproj",
+    "pyemu", "reportlab", "pillow", "python-docx", "pyvista", "trame",
+    "modflow-setup", "rich", "pyfiglet", "questionary", "pytest", "pytest-cov",
+]
+
+[project.scripts]
+mfw = "mfworkflow.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mfworkflow = ["report/assets/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: pruebas que ejecutan MODFLOW 6 / PEST++ (lentas)",
+]

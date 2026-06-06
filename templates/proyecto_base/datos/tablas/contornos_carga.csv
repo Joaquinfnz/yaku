@@ -1,0 +1,5 @@
+lado,carga_m,layer,stress_period
+izquierdo,60.0,1,all
+derecho,45.0,1,all
+superior,55.0,1,all
+inferior,50.0,1,all
