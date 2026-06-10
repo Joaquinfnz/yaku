@@ -71,7 +71,30 @@ salidas reales. Reproducible con `python examples/ejemplo_regional/correr_ejempl
 - `docs/astm/mapeo_sea.md` — mapeo ASTM ↔ contenidos SEIA (perfil de informe `sea`).
 - `docs/Guia_MODFLOW_FloPy_DesdeCero.md` — guía conceptual desde cero.
 
+## Paquetes y procesos soportados
+
+- **Flujo (GWF)**: DIS/DISV, NPF, STO, IC, recarga (RCH) y ET (EVT).
+- **Bordes**: CHD, WEL, RIV, DRN, GHB.
+- **Ríos acoplados (SFR)** y **zona vadosa (UZF)** — cuando hay `uzf.csv`, UZF
+  reemplaza RCH+EVT (infiltración + ET con retardo, sin doble contabilidad).
+- **Transporte (GWT)** y **densidad variable / intrusión salina (BUY)**.
+- **Calibración** (evaluación de ajuste + PEST++ glm/ies) y **predicción con incertidumbre**.
+- **Trayectorias** (MODPATH 7) y **mallas Voronoi/DISV** refinadas en pozos.
+- **Solver Newton-Raphson** para celdas convertibles (secado/rehumedecimiento).
+
+## Licencia y cómo citar
+
+Distribuido bajo licencia **MIT** (ver [`LICENSE`](LICENSE)): puedes usarlo, modificarlo
+y redistribuirlo libremente, **conservando el aviso de copyright y autoría**.
+
+Si lo usas en estudios, informes o publicaciones, **por favor cítalo**. GitHub muestra
+un botón *"Cite this repository"* a partir de [`CITATION.cff`](CITATION.cff). Cita sugerida:
+
+> Fernández, J. (2026). *mfworkflow: Workflow replicable de modelación de aguas
+> subterráneas (MODFLOW 6 + FloPy, ASTM / SEIA Chile)*, v2.0.0.
+> https://github.com/Joaquinfnz/mfworkflow
+
 ## Estado
 
-Migrado por fases desde el workflow original (conservado en `~/Desktop/MODFLOW_Workflow/`
-como respaldo). El proyecto nuevo es el árbol `modflow-workflow/`. Ver historial de git.
+Workflow migrado a paquete instalable (`mfworkflow`, v2.0.0). Ver historial de git
+para la evolución por fases.
