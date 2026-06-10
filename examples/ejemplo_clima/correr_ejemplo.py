@@ -109,7 +109,7 @@ def construir_rio() -> None:
 def twin() -> None:
     """Experimento gemelo: observaciones consistentes desde las cargas simuladas + ruido."""
     import flopy
-    from mfworkflow.config import load_config
+    from yaku.config import load_config
     cfg = load_config(PROJ / "config.yaml")
     obs_csv = cfg.datos_dir / "observaciones_nivel.csv"
     hds = cfg.resultados_dir / f"{cfg.model_name}.hds"

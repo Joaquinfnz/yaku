@@ -1,13 +1,13 @@
 # Preparación de la información para el modelo
 
 Esta guía responde: **¿qué datos junto y en qué formato los entrego?** El comando
-`mfw prep` toma estos insumos crudos y arma un borrador de las tablas del modelo.
+`yaku prep` toma estos insumos crudos y arma un borrador de las tablas del modelo.
 
 ## Dónde van los datos crudos
 Dentro de tu proyecto, en `datos/fuente/`. Luego corres:
 
 ```bash
-mfw prep --project proyectos/<tu_proyecto> --cellsize 100 --nlay 1 --espesor 50
+yaku prep --project proyectos/<tu_proyecto> --cellsize 100 --nlay 1 --espesor 50
 ```
 
 Eso genera `datos/tablas/*.csv` (editable) y copia las capas a `datos/gis/`.
@@ -53,10 +53,10 @@ serio, agrega progresivamente:
 
 ## Flujo completo recomendado
 ```bash
-mfw new 2026_mi_estudio
+yaku new 2026_mi_estudio
 # copia tus archivos a proyectos/2026_mi_estudio/datos/fuente/
-mfw prep    --project proyectos/2026_mi_estudio
+yaku prep    --project proyectos/2026_mi_estudio
 # revisa y ajusta datos/tablas/*.csv (capas, K, bordes)
-mfw gis     --project proyectos/2026_mi_estudio   # (opcional) verifica el mapeo GIS
-mfw pipeline --project proyectos/2026_mi_estudio  # construir, correr, informe
+yaku gis     --project proyectos/2026_mi_estudio   # (opcional) verifica el mapeo GIS
+yaku pipeline --project proyectos/2026_mi_estudio  # construir, correr, informe
 ```

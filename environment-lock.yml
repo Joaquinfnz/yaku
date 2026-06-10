@@ -1,4 +1,4 @@
-name: modflow-workflow
+name: yaku
 channels:
   - conda-forge
   - defaults
@@ -347,7 +347,7 @@ dependencies:
       - gis-utils==0.3.6
       - iniconfig==2.3.0
       - lxml==6.1.1
-      - mfworkflow==0.1.0
+      - yaku==0.1.0
       - modflow-export==0.3.0
       - modflow-setup==0.8.0
       - pluggy==1.6.0

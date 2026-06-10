@@ -2,8 +2,8 @@
 
 import shutil
 
-from mfworkflow.config import resolve_project_config
-from mfworkflow.report.entregables import armar_entregables
+from yaku.config import resolve_project_config
+from yaku.report.entregables import armar_entregables
 
 
 def test_arma_paquete_seia(tmp_path):

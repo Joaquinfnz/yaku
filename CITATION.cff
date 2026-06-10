@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "Si usas este software (total o parcialmente) en trabajos, informes o publicaciones, por favor cítalo así."
-title: "mfworkflow: Workflow replicable de modelación de aguas subterráneas (MODFLOW 6 + FloPy, ASTM / SEIA Chile)"
+title: "yaku: Workflow replicable de modelación de aguas subterráneas (MODFLOW 6 + FloPy, ASTM / SEIA Chile)"
 abstract: >-
-  Motor instalable (CLI mfw) que convierte la modelación hidrogeológica con
+  Motor instalable (CLI yaku) que convierte la modelación hidrogeológica con
   MODFLOW 6 y FloPy en un flujo replicable por proyecto: construcción del modelo,
   calibración (PEST++), predicción con incertidumbre, transporte de solutos,
   intrusión salina, trayectorias (MODPATH 7) e informe con perfil ASTM o SEIA.
@@ -13,8 +13,8 @@ authors:
 version: "2.0.0"
 date-released: "2026-06-09"
 license: MIT
-repository-code: "https://github.com/Joaquinfnz/mfworkflow"
-url: "https://github.com/Joaquinfnz/mfworkflow"
+repository-code: "https://github.com/Joaquinfnz/yaku"
+url: "https://github.com/Joaquinfnz/yaku"
 keywords:
   - MODFLOW 6
   - FloPy

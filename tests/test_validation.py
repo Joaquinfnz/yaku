@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from mfworkflow.builder import ModflowModelBuilder, validate_geometry_and_units
+from yaku.builder import ModflowModelBuilder, validate_geometry_and_units
 
 
 def test_demo_data_valida(demo_data_dir, tmp_path):

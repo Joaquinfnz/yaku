@@ -1,4 +1,4 @@
-name: modflow-workflow
+name: yaku
 channels:
   - conda-forge
 dependencies:

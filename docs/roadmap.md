@@ -1,7 +1,7 @@
 # Roadmap — integraciones futuras
 
 Ideas para hacer el modelo **más complejo y más exacto**, ordenadas por impacto.
-No están implementadas todavía; son el plan de evolución de `mfworkflow`.
+No están implementadas todavía; son el plan de evolución de `yaku`.
 Autor: Joaquín Fernández.
 
 ## 1. Recarga climática (datos chilenos) — *mayor impacto*
@@ -47,7 +47,7 @@ Convertir series de clima en **recarga distribuida y transiente** mediante un
 - **Entorno fijo**: `conda-lock` o **pixi** (hoy `environment.yml` no fija versiones).
 - **CI** (GitHub Actions con pytest sobre `caso_demo`) + `pre-commit` (ruff/black) + CHANGELOG + semver.
 - **Interfaz**: subir la TUI a **Textual** (paneles, logs en vivo, figuras); o mini-GUI **Streamlit** para informes.
-- **Asistente** `mfw init` (wizard por tipo de estudio: dewatering / intrusión salina / GDE).
+- **Asistente** `yaku init` (wizard por tipo de estudio: dewatering / intrusión salina / GDE).
 - **Bundle reproducible**: datos + config + lockfile + notebook + hash (extiende inputs_metadata.json).
 
 ## 8. Análisis a integrar (ríos + precipitación + meteorología + geología)

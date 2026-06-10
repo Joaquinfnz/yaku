@@ -6,7 +6,7 @@ bucle principal salga limpio cuando el usuario elige salir (input mockeado).
 
 import builtins
 
-from mfworkflow import tui
+from yaku import tui
 
 
 def test_ns_tiene_defaults():

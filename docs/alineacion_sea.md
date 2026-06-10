@@ -1,8 +1,8 @@
-# Alineación: MODFLOW ↔ Guía SEA ↔ ciencia ↔ mfworkflow
+# Alineación: MODFLOW ↔ Guía SEA ↔ ciencia ↔ yaku
 
 Qué puede producir un modelo MODFLOW 6, qué **exige/pide la Guía SEA** (uso de modelos de aguas
 subterráneas en el SEIA, 2012), qué interesa por el lado **científico**, y el **estado en
-mfworkflow**. El objetivo es que el workflow entregue, de forma estándar, **todo** lo que un
+yaku**. El objetivo es que el workflow entregue, de forma estándar, **todo** lo que un
 estudio SEA y un estudio científico necesitan. Autor: Joaquín Fernández.
 
 Estado: ✅ implementado · 🟡 parcial · ⬜ por agregar.
@@ -17,7 +17,7 @@ Anexos (archivos del modelo, metadatos, trazabilidad).
 
 ## Matriz de salidas
 
-| Salida / capacidad | MODFLOW | Guía SEA | Ciencia | mfworkflow |
+| Salida / capacidad | MODFLOW | Guía SEA | Ciencia | yaku |
 |---|---|---|---|---|
 | Modelo conceptual (texto + figura esquemática) | — | exige | sí | 🟡 texto (`secciones.md`); falta figura |
 | Discretización: grilla DIS / DISV-Voronoi multicapa | sí | exige | sí | ✅ `mesh`, `build` |

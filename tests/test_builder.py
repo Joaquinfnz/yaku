@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from mfworkflow.builder import ModflowModelBuilder
-from mfworkflow.setup import stamp_inputs
+from yaku.builder import ModflowModelBuilder
+from yaku.setup import stamp_inputs
 
 
 def test_build_simulation_construye_paquetes(demo_data_dir, tmp_path):

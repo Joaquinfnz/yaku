@@ -2,7 +2,7 @@
 
 import pytest
 
-from mfworkflow.binaries import resolve_exe
+from yaku.binaries import resolve_exe
 
 
 @pytest.mark.slow
@@ -12,7 +12,7 @@ def test_voronoi_y_disv(tmp_path):
     gpd = pytest.importorskip("geopandas")
     from shapely.geometry import Point, Polygon
 
-    from mfworkflow.mesh.voronoi import build_voronoi, run_disv_flow
+    from yaku.mesh.voronoi import build_voronoi, run_disv_flow
 
     gis = tmp_path / "gis"
     gis.mkdir()
@@ -37,7 +37,7 @@ def test_disv_multicapa(tmp_path):
     import flopy
     from shapely.geometry import Polygon
 
-    from mfworkflow.mesh.voronoi import build_disv_model, build_voronoi
+    from yaku.mesh.voronoi import build_disv_model, build_voronoi
 
     gis = tmp_path / "gis"
     gis.mkdir()

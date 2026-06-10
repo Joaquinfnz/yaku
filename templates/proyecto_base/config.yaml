@@ -1,5 +1,5 @@
 # Configuracion del proyecto (rutas RELATIVAS a esta carpeta).
-# Generado desde templates/proyecto_base por `mfw new`. Los {{placeholders}}
+# Generado desde templates/proyecto_base por `yaku new`. Los {{placeholders}}
 # se sustituyen al instanciar el proyecto.
 
 proyecto:

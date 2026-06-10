@@ -1,14 +1,14 @@
 # Insumos para modelar (qué necesitas antes de empezar)
 
 Esta carpeta es un **ejemplo de los archivos de entrada** que entrega el modelador
-antes de correr `mfworkflow`. Copia esta estructura a tu proyecto (`datos/fuente/`) y
-reemplaza los archivos de ejemplo por los tuyos. Luego `mfw prep` los convierte en las
-tablas del modelo, y `mfw check` te dice qué tienes y qué te falta.
+antes de correr `yaku`. Copia esta estructura a tu proyecto (`datos/fuente/`) y
+reemplaza los archivos de ejemplo por los tuyos. Luego `yaku prep` los convierte en las
+tablas del modelo, y `yaku check` te dice qué tienes y qué te falta.
 
 > **Unidades fijas:** longitud en **metros**, conductividad en **m/día**, caudal en
 > **m³/día**, tiempo en **días**. Todas las capas en el **mismo CRS proyectado** (UTM).
 
-Los insumos se ordenan en tres niveles. `mfw check` usa exactamente esta clasificación.
+Los insumos se ordenan en tres niveles. `yaku check` usa exactamente esta clasificación.
 
 ---
 
@@ -22,7 +22,7 @@ Los insumos se ordenan en tres niveles. `mfw check` usa exactamente esta clasifi
 | **Bordes de carga** | `contornos_carga.csv` | Condiciones de borde (CHD). |
 | **Tiempo** | `stress_periods.csv` | Discretización temporal (steady/transiente). |
 
-> Las cuatro tablas se pueden **generar automáticamente** con `mfw prep` a partir del
+> Las cuatro tablas se pueden **generar automáticamente** con `yaku prep` a partir del
 > `dominio.shp` (+ `dem.tif`); luego las editas. El `dominio.shp` sí o sí lo pones tú.
 
 ## 🟨 IMPORTANTES (muy recomendados; suben la calidad del modelo)
@@ -49,12 +49,12 @@ Los insumos se ordenan en tres niveles. `mfw check` usa exactamente esta clasifi
 ## Cómo usarlo
 
 ```bash
-mfw new mi_proyecto                       # crea el proyecto desde la plantilla
+yaku new mi_proyecto                       # crea el proyecto desde la plantilla
 cp -r templates/insumos_ejemplo/datos/fuente/* proyectos/mi_proyecto/datos/fuente/
 # reemplaza los de ejemplo por tus archivos reales, luego:
-mfw prep  --project proyectos/mi_proyecto # fuente -> tablas del modelo
-mfw check --project proyectos/mi_proyecto # revisa obligatorios/importantes/opcionales
-mfw run   --project proyectos/mi_proyecto # construye y corre (bloquea si faltan mínimos)
+yaku prep  --project proyectos/mi_proyecto # fuente -> tablas del modelo
+yaku check --project proyectos/mi_proyecto # revisa obligatorios/importantes/opcionales
+yaku run   --project proyectos/mi_proyecto # construye y corre (bloquea si faltan mínimos)
 ```
 
 Los archivos de esta carpeta (`dominio`, `pozos`, `rio`, `observaciones`, `caudales.csv`,

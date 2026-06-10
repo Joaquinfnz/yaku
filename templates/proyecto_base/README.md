@@ -5,7 +5,7 @@
 - **Fecha:** {{fecha}}
 
 Proyecto de modelación de aguas subterráneas (MODFLOW 6 + FloPy) generado con
-`mfworkflow`. Estructura autocontenida y replicable.
+`yaku`. Estructura autocontenida y replicable.
 
 ## Estructura
 ```
@@ -19,12 +19,12 @@ informe/                     informe PDF (no versionado)
 
 ## Flujo de trabajo
 ```bash
-mfw build    --project .     # Etapa 3: construir el modelo
-mfw run      --project .     # ejecutar MODFLOW 6
-mfw calibrate --project .    # Etapas 4-5: calibración / sensibilidad
-mfw report   --project .     # Etapa 7: informe (perfil astm | sea)
+yaku build    --project .     # Etapa 3: construir el modelo
+yaku run      --project .     # ejecutar MODFLOW 6
+yaku calibrate --project .    # Etapas 4-5: calibración / sensibilidad
+yaku report   --project .     # Etapa 7: informe (perfil astm | sea)
 # o todo de una:
-mfw pipeline --project .     # build -> run -> report
+yaku pipeline --project .     # build -> run -> report
 ```
 
 Edita `datos/tablas/*.csv` con tus datos reales (ver `00_checklist_datos_ASTM.md`)

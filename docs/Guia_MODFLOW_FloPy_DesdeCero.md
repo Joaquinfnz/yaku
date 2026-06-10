@@ -35,7 +35,7 @@ El script `04_modelo_base/modelo_desde_datos.py` ahora acepta:
 Despues de correr un modelo, puedes levantar una visualizacion 3D de la carga hidraulica final desde el archivo `HDS`.
 
 ```bash
-conda run -n modflow-workflow python 04_modelo_base/visualizar_heads_3d.py --hds 04_modelo_base/resultados_datos/modelo_datos.hds
+conda run -n yaku python 04_modelo_base/visualizar_heads_3d.py --hds 04_modelo_base/resultados_datos/modelo_datos.hds
 ```
 
 Eso te genera una superficie 3D de cargas para una capa del modelo.
@@ -51,25 +51,25 @@ Eso te genera una superficie 3D de cargas para una capa del modelo.
 ### 1. Probar instalacion
 
 ```bash
-conda run -n modflow-workflow python 00_setup/verify_installation.py
+conda run -n yaku python 00_setup/verify_installation.py
 ```
 
 ### 2. Correr modelo base
 
 ```bash
-conda run -n modflow-workflow python 04_modelo_base/modelo_prueba.py
+conda run -n yaku python 04_modelo_base/modelo_prueba.py
 ```
 
 ### 3. Correr modelo desde insumos
 
 ```bash
-conda run -n modflow-workflow python 04_modelo_base/modelo_desde_datos.py
+conda run -n yaku python 04_modelo_base/modelo_desde_datos.py
 ```
 
 ### 4. Generar informe PDF
 
 ```bash
-conda run -n modflow-workflow python 06_informe_pdf/generar_informe.py --hds 04_modelo_base/resultados_datos/modelo_datos.hds --output 06_informe_pdf/output/informe_modelo_datos.pdf
+conda run -n yaku python 06_informe_pdf/generar_informe.py --hds 04_modelo_base/resultados_datos/modelo_datos.hds --output 06_informe_pdf/output/informe_modelo_datos.pdf
 ```
 
 ## Como escalar este workflow

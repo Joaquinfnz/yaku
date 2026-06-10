@@ -68,7 +68,7 @@ def _caudal_rio(fechas, precip, et0):
     proporcionales a la lluvia del día con recesión rápida. Permite separar el flujo base y
     validar la recarga del modelo.
     """
-    from mfworkflow.hidrologia import balance_suelo_diario
+    from yaku.hidrologia import balance_suelo_diario
     rec = balance_suelo_diario(precip, et0, cc_mm=70, coef_escorrentia=0.15, k_percolacion=0.04)
     # reservorio de flujo base (descarga lenta de la recarga)
     base = np.zeros(len(precip))

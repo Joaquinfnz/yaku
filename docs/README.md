@@ -1,4 +1,4 @@
-# Documentación de mfworkflow
+# Documentación de yaku
 
 Índice de la documentación del proyecto.
 
@@ -17,7 +17,7 @@
 |---------|--------|
 | [astm/etapas.md](astm/etapas.md) | Las 7 etapas ASTM (D5447 / D5981) y sus comandos. |
 | [astm/mapeo_sea.md](astm/mapeo_sea.md) | Mapeo etapas ASTM ↔ contenidos mínimos SEIA (Guía SEA 2012). |
-| [alineacion_sea.md](alineacion_sea.md) | Matriz MODFLOW ↔ Guía SEA ↔ ciencia ↔ mfworkflow (qué tiene y qué falta). |
+| [alineacion_sea.md](alineacion_sea.md) | Matriz MODFLOW ↔ Guía SEA ↔ ciencia ↔ yaku (qué tiene y qué falta). |
 
 ## Ejemplo real
 | Archivo | Qué es |

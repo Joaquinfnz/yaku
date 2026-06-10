@@ -2,7 +2,7 @@
 
 import pytest
 
-from mfworkflow.cli import main
+from yaku.cli import main
 
 
 def test_new_crea_proyecto_autocontenido(tmp_path):

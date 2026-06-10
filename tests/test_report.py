@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from mfworkflow.report.pdf import PERFILES, write_pdf
+from yaku.report.pdf import PERFILES, write_pdf
 
 
 def test_perfiles_definidos():
@@ -13,7 +13,7 @@ def test_perfiles_definidos():
 
 
 def test_secciones_md_editable(tmp_path):
-    from mfworkflow.report.pdf import _norm, _texto_usuario, leer_secciones_md
+    from yaku.report.pdf import _norm, _texto_usuario, leer_secciones_md
 
     md = tmp_path / "secciones.md"
     md.write_text("## Modelo conceptual\nAcuifero libre en gravas.\n\n## Conclusiones\nModelo valido.\n",
@@ -27,7 +27,7 @@ def test_secciones_md_editable(tmp_path):
 
 
 def test_secciones_md_ignora_comentarios(tmp_path):
-    from mfworkflow.report.pdf import _norm, _texto_usuario, leer_secciones_md
+    from yaku.report.pdf import _norm, _texto_usuario, leer_secciones_md
 
     md = tmp_path / "secciones.md"
     md.write_text(
@@ -59,9 +59,9 @@ def test_write_docx_perfil_sea(tmp_path):
     import pytest
 
     pytest.importorskip("docx")
-    from mfworkflow.config import resolve_project_config
-    from mfworkflow.report.docx_report import write_docx
-    from mfworkflow.report.resultados import recolectar_resultados
+    from yaku.config import resolve_project_config
+    from yaku.report.docx_report import write_docx
+    from yaku.report.resultados import recolectar_resultados
 
     cfg = resolve_project_config("examples/caso_demo")
     res = recolectar_resultados(cfg, figuras_dir=tmp_path)

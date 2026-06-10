@@ -2,12 +2,12 @@
 
 import pytest
 
-from mfworkflow.builder import ModflowModelBuilder
+from yaku.builder import ModflowModelBuilder
 
 
 @pytest.mark.slow
 def test_view3d_exporta_vtk(demo_data_dir, tmp_path):
-    from mfworkflow.viz import plots_3d
+    from yaku.viz import plots_3d
 
     ws = tmp_path / "model"
     ModflowModelBuilder(demo_data_dir, ws, model_name="m").build_and_run(postprocess=False)

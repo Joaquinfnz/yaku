@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-from mfworkflow import hidrologia as h
+from yaku import hidrologia as h
 
 
 def _clima_sintetico(anios=5, seed=1):

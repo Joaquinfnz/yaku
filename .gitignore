@@ -66,8 +66,8 @@ examples/*/informe/*.md
 !.gitkeep
 
 # Tutorial en Word (.docx)
-Tutorial_mfworkflow.docx
-Tutorial_mfworkflow.pdf
+Tutorial_yaku.docx
+Tutorial_yaku.pdf
 
 # Tutorial generado
 docs/_build/

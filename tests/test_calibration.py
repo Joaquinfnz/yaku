@@ -2,8 +2,8 @@
 
 import pytest
 
-from mfworkflow.builder import ModflowModelBuilder
-from mfworkflow.calibration import evaluate_fit, setup_pest
+from yaku.builder import ModflowModelBuilder
+from yaku.calibration import evaluate_fit, setup_pest
 
 
 @pytest.mark.slow
@@ -20,7 +20,7 @@ def test_evaluate_fit_metricas(demo_data_dir, tmp_path):
 
 @pytest.mark.slow
 def test_sensibilidad_oat(demo_data_dir, tmp_path):
-    from mfworkflow.calibration.sensibilidad import sensibilidad_oat
+    from yaku.calibration.sensibilidad import sensibilidad_oat
 
     df = sensibilidad_oat(
         demo_data_dir, demo_data_dir / "parametros_calibracion.csv",
@@ -33,7 +33,7 @@ def test_sensibilidad_oat(demo_data_dir, tmp_path):
 
 def test_obs_names_unicos():
     """Nombres de observacion truncados a 20 chars no deben colisionar."""
-    from mfworkflow.calibration.pest_setup import _safe_obs_names
+    from yaku.calibration.pest_setup import _safe_obs_names
 
     nombres = ["Pozo_de_monitoreo_norte_01", "Pozo_de_monitoreo_norte_02", "P1"]
     out = _safe_obs_names(nombres)

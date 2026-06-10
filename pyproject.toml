@@ -3,7 +3,7 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mfworkflow"
+name = "yaku"
 version = "2.0.0"
 description = "Workflow replicable de modelacion de aguas subterraneas MODFLOW 6 + FloPy (ASTM / SEIA Chile)"
 readme = "README.md"
@@ -38,13 +38,14 @@ all = [
 ]
 
 [project.scripts]
-mfw = "mfworkflow.cli:main"
+yaku = "yaku.cli:main"
+mfw = "yaku.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-mfworkflow = ["report/assets/*"]
+yaku = ["report/assets/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

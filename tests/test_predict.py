@@ -2,7 +2,7 @@
 
 import pytest
 
-from mfworkflow.calibration import monte_carlo, scenario_drawdown
+from yaku.calibration import monte_carlo, scenario_drawdown
 
 
 @pytest.mark.slow

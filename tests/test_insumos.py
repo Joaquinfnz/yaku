@@ -2,8 +2,8 @@
 
 import shutil
 
-from mfworkflow.config import resolve_project_config
-from mfworkflow.insumos import MINIMOS_PARA_CORRER, formatear, revisar_insumos
+from yaku.config import resolve_project_config
+from yaku.insumos import MINIMOS_PARA_CORRER, formatear, revisar_insumos
 
 
 def test_caso_demo_tiene_minimos():
@@ -24,7 +24,7 @@ def test_formatear_agrupa_por_nivel():
 def test_crear_plantilla(tmp_path):
     import pandas as pd
 
-    from mfworkflow.prep.skeletons import crear_plantilla
+    from yaku.prep.skeletons import crear_plantilla
 
     p = crear_plantilla(tmp_path, "capas_modelo.csv")
     assert p is not None and p.exists()

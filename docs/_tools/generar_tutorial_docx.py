@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera el tutorial general de mfworkflow en Word (.docx) + PDF.
+"""Genera el tutorial general de yaku en Word (.docx) + PDF.
 
 Usa el helper de diseño `docx_helpers.DocBuilder` (tema azul/agua, sin emojis).
 El helper esta **vendorizado** junto a este script (docs/_tools/docx_helpers.py) para
@@ -31,7 +31,7 @@ def build(out_docx: Path) -> Path:
 
     # ---------- PORTADA ----------
     d.cover(
-        "mfworkflow",
+        "yaku",
         "Modelación de aguas subterráneas con MODFLOW 6 + FloPy",
         "Tutorial general de uso  -  Autor: Joaquín Fernández",
     )
@@ -61,7 +61,7 @@ def build(out_docx: Path) -> Path:
 
     # ---------- 1 ----------
     d.h1("Qué es esto y para quién")
-    d.p("mfworkflow automatiza todo el proceso de hacer un modelo de aguas subterráneas con "
+    d.p("yaku automatiza todo el proceso de hacer un modelo de aguas subterráneas con "
         "MODFLOW 6, desde los datos crudos hasta el informe técnico final. Esta pensado para "
         "consultoría de forma repetible: cada estudio nuevo se arma en minutos desde una plantilla.")
     d.p("Sirve para dos públicos:")
@@ -125,7 +125,7 @@ def build(out_docx: Path) -> Path:
            "  Informe:         falta\n"
            "  => Siguiente paso: corre el modelo (Pipeline completo o build + run)")
     d.info_box("Para que sirve",
-               "Es la forma más fácil de usar mfworkflow y de que lo use alguien nuevo: en vez de "
+               "Es la forma más fácil de usar yaku y de que lo use alguien nuevo: en vez de "
                "memorizar comandos, sigues el 'siguiente paso sugerido'. Cada opción del menú dice "
                "que hace y que datos necesita.")
 
@@ -153,7 +153,7 @@ def build(out_docx: Path) -> Path:
     ])
     d.code("mfw datos --project proyectos/mi_proyecto    # crea plantillas de lo que falta\nmfw check --project proyectos/mi_proyecto")
     d.info_box("Bloqueo de seguridad",
-               "Si faltan los obligatorios, mfworkflow no te deja construir/correr y te dice cuales "
+               "Si faltan los obligatorios, yaku no te deja construir/correr y te dice cuales "
                "faltan. Hay una carpeta de ejemplo de insumos en templates/insumos_ejemplo/ con un "
                "LEEME que separa obligatorios / importantes / opcionales.")
 
@@ -306,7 +306,7 @@ def build(out_docx: Path) -> Path:
     ])
     d.p("Y si quieres extender el motor (programar algo nuevo), cada modulo del codigo tiene "
         "una sola responsabilidad:")
-    d.table(["Modulo (src/mfworkflow/)", "Responsabilidad"], [
+    d.table(["Modulo (src/yaku/)", "Responsabilidad"], [
         ["cli.py", "Comandos mfw (new/prep/build/run/calibrate/predict/report...)."],
         ["config.py", "Lee config.yaml y resuelve rutas del proyecto."],
         ["prep/prepare.py, prep/recarga.py", "Arma tablas desde insumos; recarga desde clima."],
@@ -554,7 +554,7 @@ def build(out_docx: Path) -> Path:
 
 
 if __name__ == "__main__":
-    salida = REPO / "docs" / "_build" / "Tutorial_mfworkflow.docx"
+    salida = REPO / "docs" / "_build" / "Tutorial_yaku.docx"
     salida.parent.mkdir(parents=True, exist_ok=True)
     docx = build(salida)
     print(f"DOCX: {docx}")

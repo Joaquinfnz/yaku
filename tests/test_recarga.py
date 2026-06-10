@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from mfworkflow.prep.recarga import balance_suelo, calcular_recarga
+from yaku.prep.recarga import balance_suelo, calcular_recarga
 
 
 def test_balance_suelo_humedo_vs_seco():

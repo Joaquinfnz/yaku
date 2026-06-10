@@ -2,15 +2,15 @@
 
 import pytest
 
-from mfworkflow.binaries import resolve_exe
-from mfworkflow.builder import ModflowModelBuilder
+from yaku.binaries import resolve_exe
+from yaku.builder import ModflowModelBuilder
 
 
 @pytest.mark.slow
 def test_modpath7_zonas_captura(demo_data_dir, tmp_path):
     if resolve_exe("mp7") is None:
         pytest.skip("mp7 no instalado (get-modflow :flopy)")
-    from mfworkflow.pathlines import modpath7
+    from yaku.pathlines import modpath7
 
     ws = tmp_path / "model"
     builder = ModflowModelBuilder(demo_data_dir, ws, model_name="m")

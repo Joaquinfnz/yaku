@@ -9,11 +9,11 @@ def test_avisar_crs_distintos(caplog):
     gpd = pytest.importorskip("geopandas")
     from shapely.geometry import Point
 
-    from mfworkflow.gis.preprocess import avisar_crs
+    from yaku.gis.preprocess import avisar_crs
 
     a = gpd.GeoDataFrame(geometry=[Point(0, 0)], crs="EPSG:32719")   # UTM 19S (m)
     b = gpd.GeoDataFrame(geometry=[Point(0, 0)], crs="EPSG:4326")    # lat/lon
-    with caplog.at_level(logging.WARNING, logger="mfworkflow"):
+    with caplog.at_level(logging.WARNING, logger="yaku"):
         avisar_crs({"dominio": a, "pozos": b})
     msgs = " ".join(r.message for r in caplog.records)
     assert "CRS" in msgs           # avisa que difieren
@@ -24,8 +24,8 @@ def test_export_rasters(tmp_path):
     import shutil
 
     pytest.importorskip("rasterio")
-    from mfworkflow.config import resolve_project_config
-    from mfworkflow.gis.export import exportar_rasters
+    from yaku.config import resolve_project_config
+    from yaku.gis.export import exportar_rasters
 
     dest = tmp_path / "caso_demo"
     shutil.copytree("examples/caso_demo", dest)
@@ -41,10 +41,10 @@ def test_avisar_crs_coherente_no_avisa(caplog):
     gpd = pytest.importorskip("geopandas")
     from shapely.geometry import Point
 
-    from mfworkflow.gis.preprocess import avisar_crs
+    from yaku.gis.preprocess import avisar_crs
 
     a = gpd.GeoDataFrame(geometry=[Point(0, 0)], crs="EPSG:32719")
     b = gpd.GeoDataFrame(geometry=[Point(1, 1)], crs="EPSG:32719")
-    with caplog.at_level(logging.WARNING, logger="mfworkflow"):
+    with caplog.at_level(logging.WARNING, logger="yaku"):
         avisar_crs({"dominio": a, "pozos": b})
     assert not [r for r in caplog.records if "CRS" in r.message]

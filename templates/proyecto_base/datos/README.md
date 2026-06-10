@@ -47,6 +47,6 @@ coherencia geométrica.
 `dominio.shp`, `pozos.shp`, `rio.shp` — **shapefile** (formato preferido; también se
 aceptan .gpkg/.geojson). Geometrías con CRS proyectado en metros.
 
-## `fuente/` (datos crudos para `mfw prep`)
+## `fuente/` (datos crudos para `yaku prep`)
 DEM (`dem.tif`), `dominio.shp`, `pozos.shp`, `caudales.csv`, etc. Ver
-`docs/preparacion_datos.md`. `mfw prep` los convierte en las tablas de `tablas/`.
+`docs/preparacion_datos.md`. `yaku prep` los convierte en las tablas de `tablas/`.

@@ -12,7 +12,7 @@ def test_prep_desde_fuentes(tmp_path):
     from rasterio.transform import from_origin
     from shapely.geometry import Point, Polygon
 
-    from mfworkflow.prep import prepare_from_sources
+    from yaku.prep import prepare_from_sources
 
     src = tmp_path / "fuente"
     src.mkdir()
@@ -50,7 +50,7 @@ def test_prep_con_perfil_litologico(tmp_path):
     from rasterio.transform import from_origin
     from shapely.geometry import Polygon
 
-    from mfworkflow.prep import prepare_from_sources
+    from yaku.prep import prepare_from_sources
 
     src = tmp_path / "fuente"
     src.mkdir()

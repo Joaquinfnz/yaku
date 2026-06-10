@@ -1,7 +1,7 @@
 """Tests del recolector de resultados (informe data-driven)."""
 
-from mfworkflow.config import resolve_project_config
-from mfworkflow.report.resultados import leer_balance, recolectar_resultados
+from yaku.config import resolve_project_config
+from yaku.report.resultados import leer_balance, recolectar_resultados
 
 
 def test_recolecta_caso_demo(tmp_path):

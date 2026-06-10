@@ -1,6 +1,6 @@
 # datos/fuente/ — insumos crudos
 
-Pon aquí tus archivos tal cual los tienes y corre `mfw prep`:
+Pon aquí tus archivos tal cual los tienes y corre `yaku prep`:
 
 - `dem.tif`        DEM del lugar (raster, metros)
 - `dominio.shp`    borde del modelo (polígono)

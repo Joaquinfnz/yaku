@@ -1,6 +1,6 @@
 """Tests del cargador de configuracion de proyecto."""
 
-from mfworkflow.config import load_config
+from yaku.config import load_config
 
 
 def test_demo_config_carga_y_valida(demo_config):

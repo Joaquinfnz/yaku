@@ -1,4 +1,4 @@
-# Arquitectura de `mfworkflow`
+# Arquitectura de `yaku`
 
 Motor instalable + sistema de plantilla por proyecto para modelación de aguas
 subterráneas (MODFLOW 6 + FloPy), alineado al protocolo **ASTM D5447 / D5981**.
@@ -6,10 +6,10 @@ subterráneas (MODFLOW 6 + FloPy), alineado al protocolo **ASTM D5447 / D5981**.
 ## Capas
 
 ```
-src/mfworkflow/            EL MOTOR (paquete instalable, comando mfw)
-├── cli.py                 comando mfw (new/build/run/calibrate/report/pipeline + avanzados)
+src/yaku/            EL MOTOR (paquete instalable, comando yaku)
+├── cli.py                 comando yaku (new/build/run/calibrate/report/pipeline + avanzados)
 ├── config.py             ProjectConfig: lee config.yaml con rutas relativas al proyecto
-├── logging_setup.py       logger unificado "mfworkflow"
+├── logging_setup.py       logger unificado "yaku"
 ├── builder/              motor SIMPLE: CSV -> MODFLOW 6 + validación geométrica/unidades
 ├── setup/                motor PROFESIONAL: modflow-setup (YAML+GIS) + version stamping
 ├── calibration/          evaluación de ajuste + PEST++ (glm/ies) vía pyemu
@@ -18,7 +18,7 @@ src/mfworkflow/            EL MOTOR (paquete instalable, comando mfw)
 ├── gis/                  preproceso GeoJSON -> tablas
 └── report/              informe PDF, perfiles astm | sea
 
-templates/proyecto_base/  plantilla clonada por `mfw new`
+templates/proyecto_base/  plantilla clonada por `yaku new`
 proyectos/                estudios reales (autocontenidos, versionables)
 examples/                 caso_demo + ejemplo_regional (end-to-end)
 docs/                     esta documentación + mapeo ASTM/SEA
@@ -35,14 +35,14 @@ tests/                    pytest
 ## Flujo por etapas ASTM
 
 ```
-mfw new      -> instancia proyecto (Etapa 1: objetivos en config.yaml)
-mfw gis      -> preproceso conceptual (Etapa 2)
-mfw build    -> construcción numérica (Etapa 3) + validación + stamping
-mfw run      -> ejecuta MODFLOW 6
-mfw calibrate-> ajuste + PEST++ (Etapas 4-5)
-mfw predict  -> incertidumbre (Etapa 6)  [pyemu/pestpp-ies]
-mfw report   -> informe perfil astm|sea (Etapa 7)
-mfw pipeline -> build + run + report
+yaku new      -> instancia proyecto (Etapa 1: objetivos en config.yaml)
+yaku gis      -> preproceso conceptual (Etapa 2)
+yaku build    -> construcción numérica (Etapa 3) + validación + stamping
+yaku run      -> ejecuta MODFLOW 6
+yaku calibrate-> ajuste + PEST++ (Etapas 4-5)
+yaku predict  -> incertidumbre (Etapa 6)  [pyemu/pestpp-ies]
+yaku report   -> informe perfil astm|sea (Etapa 7)
+yaku pipeline -> build + run + report
 ```
 
 ## Reproducibilidad
