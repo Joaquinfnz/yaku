@@ -94,6 +94,33 @@ un botón *"Cite this repository"* a partir de [`CITATION.cff`](CITATION.cff). C
 > subterráneas (MODFLOW 6 + FloPy, ASTM / SEIA Chile)*, v2.0.0.
 > https://github.com/Joaquinfnz/mfworkflow
 
+## Créditos y herramientas base
+
+`mfworkflow` es una **capa de orquestación**: integra y automatiza un flujo de trabajo
+sobre motores científicos de código abierto desarrollados por terceros (principalmente el
+**USGS**). Este paquete **no reimplementa** esos motores; los usa como dependencias. El
+crédito por el cálculo hidrogeológico corresponde a sus autores. Si publicas resultados
+obtenidos con esta herramienta, **cita además los motores que usaste**:
+
+- **MODFLOW 6** — Langevin, C.D., Hughes, J.D., Banta, E.R., Niswonger, R.G., Panday, S.,
+  & Provost, A.M. (2017). *Documentation for the MODFLOW 6 Groundwater Flow Model.* U.S.
+  Geological Survey Techniques and Methods, book 6, chap. A55. https://doi.org/10.3133/tm6A55
+- **FloPy** — Bakker, M., Post, V., Langevin, C.D., Hughes, J.D., White, J.T., Starn, J.J.,
+  & Fienen, M.N. (2016). *Scripting MODFLOW Model Development Using Python and FloPy.*
+  Groundwater, 54(5), 733–739. https://doi.org/10.1111/gwat.12413
+- **PEST++** — White, J.T., Hunt, R.J., Fienen, M.N., & Doherty, J.E. (2020). *Approaches to
+  Highly Parameterized Inversion: PEST++ Version 5.* U.S. Geological Survey Techniques and
+  Methods 7C26. https://doi.org/10.3133/tm7C26
+- **pyEMU** — White, J.T., Fienen, M.N., & Doherty, J.E. (2016). *A python framework for
+  environmental model uncertainty analysis.* Environmental Modelling & Software, 85, 217–228.
+  https://doi.org/10.1016/j.envsoft.2016.08.017
+- **MODPATH 7** — Pollock, D.W. (2016). *User guide for MODPATH version 7.* U.S. Geological
+  Survey Open-File Report 2016-1086. https://doi.org/10.3133/ofr20161086
+
+Cada dependencia conserva su propia licencia y aviso de copyright. El protocolo de modelación
+sigue los estándares **ASTM D5447 / D5981** y, en Chile, la **Guía SEA 2012** (contenidos de
+dominio público).
+
 ## Estado
 
 Workflow migrado a paquete instalable (`mfworkflow`, v2.0.0). Ver historial de git
