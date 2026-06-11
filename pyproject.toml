@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "yaku"
-version = "2.0.0"
-description = "Workflow replicable de modelacion de aguas subterraneas MODFLOW 6 + FloPy (ASTM / SEIA Chile)"
+version = "1.0.0b1"
+description = "YAKU-MODFLOW: workflow replicable de modelacion de aguas subterraneas MODFLOW 6 + FloPy (ASTM / SEIA Chile)"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -46,6 +46,17 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 yaku = ["report/assets/*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+# E501/E702: el codigo usa lineas largas y `;` para agrupar llamadas de plot;
+# se acepta como idioma del proyecto.
+ignore = ["E501", "E702"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

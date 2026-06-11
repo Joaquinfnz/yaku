@@ -52,6 +52,7 @@ RUN_DATA = RUN_DIR / "datos"
 RUN_MODEL = RUN_DIR / "modelo"
 PARAM_FILE = PEST_DIR / "parametros_pest.csv"
 OUT_FILE = PEST_DIR / "simulados_pest.csv"
+AFOROS = r"{aforos_file}"
 MODEL_NAME = "pest_model"
 
 
@@ -102,6 +103,13 @@ def main():
             "simulado_m": float(head[int(obs["layer"]) - 1, int(obs["row"]), int(obs["col"])]),
         }})
     pd.DataFrame(rows).to_csv(OUT_FILE, index=False, sep=" ")
+
+    # Multi-objetivo: caudal base simulado (SFR/RIV) contra aforos
+    if AFOROS:
+        from yaku.calibration.caudales import escribir_simulados_caudal
+
+        escribir_simulados_caudal(RUN_MODEL / f"{{MODEL_NAME}}.cbc", pd.read_csv(AFOROS),
+                                  PEST_DIR / "simulados_caudal.csv")
 
 
 if __name__ == "__main__":
@@ -157,66 +165,35 @@ def _write_instruction(observations: pd.DataFrame, ins_path: Path, out_path: Pat
     return obs_names
 
 
-def setup_pest(
-    pest_dir: Path,
-    datos_dir: Path,
-    observations_path: Path,
-    calib_params_path: Path,
-    *,
-    max_params: int = 2,
-    noptmax: int = 2,
-    engine: str = "pestpp-glm",
-) -> Path:
-    """Genera el caso PEST++ en pest_dir y devuelve la ruta del .pst."""
-    if not HAS_PYEMU:
-        raise RuntimeError("pyemu no esta instalado (pip install pyemu).")
+def _write_instruction_caudales(aforos: pd.DataFrame, ins_path: Path, out_path: Path) -> list[str]:
+    """Archivo .ins para los aforos (caudal base, m3/d). Devuelve los nombres de obs."""
+    obs_names = _safe_obs_names(aforos["nombre"])
+    ins_lines = ["pif ~", "l1"]
+    out_lines = ["nombre simulado_m3d"]
+    for obs_name, q in zip(obs_names, aforos["caudal_m3_d"]):
+        ins_lines.append(f"l1 w !{obs_name}!")
+        out_lines.append(f"{obs_name} {float(q):.6f}")
+    ins_path.write_text("\n".join(ins_lines) + "\n", encoding="utf-8")
+    out_path.write_text("\n".join(out_lines) + "\n", encoding="utf-8")
+    return obs_names
 
-    pest_dir = Path(pest_dir)
-    pest_dir.mkdir(parents=True, exist_ok=True)
-    datos_dir = Path(datos_dir).resolve()
-    observations_path = Path(observations_path).resolve()
-    calib_params_path = Path(calib_params_path).resolve()
 
-    parameters = pd.read_csv(calib_params_path).head(max(1, int(max_params))).copy()
-    observations = pd.read_csv(observations_path)
+def _apply_caudal_observation_data(pst, aforos: pd.DataFrame, obs_names: list[str]) -> None:
+    """Valores, pesos y grupo 'caudales' para los aforos en el .pst (multi-objetivo)."""
+    from yaku.calibration.caudales import peso_aforo
 
-    tpl_path = pest_dir / "parametros_pest.tpl"
-    in_path = pest_dir / "parametros_pest.csv"
-    ins_path = pest_dir / "simulados_pest.ins"
-    out_path = pest_dir / "simulados_pest.csv"
-    pst_path = pest_dir / "calibracion.pst"
-
-    _write_template(parameters, tpl_path, in_path)
-    obs_names = _write_instruction(observations, ins_path, out_path)
-
-    (pest_dir / "forward_run.py").write_text(
-        FORWARD_TEMPLATE.format(
-            data_dir=str(datos_dir),
-            obs_file=str(observations_path),
-            calib_file=str(calib_params_path),
-        ),
-        encoding="utf-8",
-    )
-
-    pst = pyemu.Pst.from_io_files(
-        tpl_files=[str(tpl_path)],
-        in_files=[str(in_path)],
-        ins_files=[str(ins_path)],
-        out_files=[str(out_path)],
-        pst_filename=str(pst_path),
-    )
-
-    par = pst.parameter_data
-    for _, row in parameters.iterrows():
-        name = str(row["nombre"]).lower()
-        if name not in par.index:
+    obs = pst.observation_data
+    for (_, row), name in zip(aforos.iterrows(), obs_names):
+        name = name.lower()
+        if name not in obs.index:
             continue
-        par.loc[name, "parval1"] = float(row["valor_inicial"])
-        par.loc[name, "parlbnd"] = float(row["limite_inferior"])
-        par.loc[name, "parubnd"] = float(row["limite_superior"])
-        par.loc[name, "partrans"] = "log" if str(row["transformacion"]).lower() == "log" else "none"
-        par.loc[name, "pargp"] = "hidro"
+        obs.loc[name, "obsval"] = float(row["caudal_m3_d"])
+        obs.loc[name, "weight"] = peso_aforo(row)
+        obs.loc[name, "obgnme"] = str(row.get("grupo", "caudales"))
 
+
+def _apply_observation_data(pst, observations: pd.DataFrame, obs_names: list[str]) -> None:
+    """Vuelca valores, pesos y grupos de observacion al .pst (comun a zonas y pilot points)."""
     obs = pst.observation_data
     observations = observations.copy()
     observations["obsnme"] = obs_names
@@ -232,6 +209,90 @@ def setup_pest(
         obs.loc[name, "weight"] = peso
         obs.loc[name, "obgnme"] = grupo
 
+
+def setup_pest(
+    pest_dir: Path,
+    datos_dir: Path,
+    observations_path: Path,
+    calib_params_path: Path,
+    *,
+    max_params: int = 2,
+    noptmax: int = 2,
+    engine: str = "pestpp-glm",
+    aforos_path: Path | None = None,
+) -> Path:
+    """Genera el caso PEST++ en pest_dir y devuelve la ruta del .pst.
+
+    Multi-objetivo: si existe `aforos_path` (o datos_dir/aforos.csv), el caudal base
+    simulado (SFR/RIV) se agrega como grupo de observacion 'caudales' junto a los niveles.
+    """
+    if not HAS_PYEMU:
+        raise RuntimeError("pyemu no esta instalado (pip install pyemu).")
+
+    pest_dir = Path(pest_dir)
+    pest_dir.mkdir(parents=True, exist_ok=True)
+    datos_dir = Path(datos_dir).resolve()
+    observations_path = Path(observations_path).resolve()
+    calib_params_path = Path(calib_params_path).resolve()
+    if aforos_path is None and (datos_dir / "aforos.csv").exists():
+        aforos_path = datos_dir / "aforos.csv"
+    aforos = pd.read_csv(aforos_path) if aforos_path is not None else None
+
+    parameters = pd.read_csv(calib_params_path).head(max(1, int(max_params))).copy()
+    observations = pd.read_csv(observations_path)
+
+    tpl_path = pest_dir / "parametros_pest.tpl"
+    in_path = pest_dir / "parametros_pest.csv"
+    ins_path = pest_dir / "simulados_pest.ins"
+    out_path = pest_dir / "simulados_pest.csv"
+    pst_path = pest_dir / "calibracion.pst"
+
+    _write_template(parameters, tpl_path, in_path)
+    obs_names = _write_instruction(observations, ins_path, out_path)
+
+    ins_files = [str(ins_path)]
+    out_files = [str(out_path)]
+    obs_names_caudal: list[str] = []
+    if aforos is not None and not aforos.empty:
+        ins_caudal = pest_dir / "simulados_caudal.ins"
+        out_caudal = pest_dir / "simulados_caudal.csv"
+        obs_names_caudal = _write_instruction_caudales(aforos, ins_caudal, out_caudal)
+        ins_files.append(str(ins_caudal))
+        out_files.append(str(out_caudal))
+
+    (pest_dir / "forward_run.py").write_text(
+        FORWARD_TEMPLATE.format(
+            data_dir=str(datos_dir),
+            obs_file=str(observations_path),
+            calib_file=str(calib_params_path),
+            aforos_file=str(aforos_path.resolve()) if aforos_path is not None else "",
+        ),
+        encoding="utf-8",
+    )
+
+    pst = pyemu.Pst.from_io_files(
+        tpl_files=[str(tpl_path)],
+        in_files=[str(in_path)],
+        ins_files=ins_files,
+        out_files=out_files,
+        pst_filename=str(pst_path),
+    )
+
+    par = pst.parameter_data
+    for _, row in parameters.iterrows():
+        name = str(row["nombre"]).lower()
+        if name not in par.index:
+            continue
+        par.loc[name, "parval1"] = float(row["valor_inicial"])
+        par.loc[name, "parlbnd"] = float(row["limite_inferior"])
+        par.loc[name, "parubnd"] = float(row["limite_superior"])
+        par.loc[name, "partrans"] = "log" if str(row["transformacion"]).lower() == "log" else "none"
+        par.loc[name, "pargp"] = "hidro"
+
+    _apply_observation_data(pst, observations, obs_names)
+    if aforos is not None and obs_names_caudal:
+        _apply_caudal_observation_data(pst, aforos, obs_names_caudal)
+
     pst.model_command = "python forward_run.py"
     pst.control_data.noptmax = int(noptmax)
     pst.write(str(pst_path), version=2)
@@ -240,14 +301,16 @@ def setup_pest(
     (pest_dir / "calibracion.tplfile_data.csv").write_text(
         "pest_file,model_file\nparametros_pest.tpl,parametros_pest.csv\n", encoding="utf-8"
     )
-    (pest_dir / "calibracion.insfile_data.csv").write_text(
-        "pest_file,model_file\nsimulados_pest.ins,simulados_pest.csv\n", encoding="utf-8"
-    )
+    ins_rows = ["pest_file,model_file", "simulados_pest.ins,simulados_pest.csv"]
+    if obs_names_caudal:
+        ins_rows.append("simulados_caudal.ins,simulados_caudal.csv")
+    (pest_dir / "calibracion.insfile_data.csv").write_text("\n".join(ins_rows) + "\n", encoding="utf-8")
 
     readme = [
         f"PEST++ preparado (motor sugerido: {engine})",
         f"Parametros ajustables: {len(parameters)}",
-        f"Observaciones: {len(observations)}",
+        f"Observaciones: {len(observations)}"
+        + (f" niveles + {len(obs_names_caudal)} aforos (multi-objetivo)" if obs_names_caudal else ""),
         f"Control file: {pst_path.name}",
         f"Ejecutar desde {pest_dir} (con el entorno activado):",
         f"  {engine} calibracion.pst",

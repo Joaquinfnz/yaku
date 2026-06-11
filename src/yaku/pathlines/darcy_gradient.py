@@ -27,7 +27,7 @@ def run(hds_path: Path, data_dir: Path, output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not hds_path.exists():
-        raise FileNotFoundError(f"Falta {hds_path.name}. Corre 'mfw run' primero.")
+        raise FileNotFoundError(f"Falta {hds_path.name}. Corre 'yaku run' primero.")
 
     params_frame = pd.read_csv(data_dir / "parametros_modelo.csv")
     params = {str(r["clave"]): float(r["valor"]) for _, r in params_frame.iterrows()}

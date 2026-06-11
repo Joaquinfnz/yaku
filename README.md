@@ -1,7 +1,10 @@
-# Yaku
+# YAKU-MODFLOW
 
 Workflow **replicable** de modelación de aguas subterráneas con **MODFLOW 6 + FloPy**,
 para estudios hidrogeológicos en el marco del SEIA (Chile). Autoría: **Joaquín Fernández**.
+
+> *Yaku* significa "agua" en quechua. El paquete Python y el comando se llaman `yaku`;
+> **YAKU-MODFLOW** es el nombre público del proyecto.
 
 Convierte el flujo de trabajo en:
 
@@ -19,6 +22,15 @@ conda env create -f environment.yml
 conda activate yaku
 get-modflow :flopy   # binarios MODFLOW 6 si hiciera falta
 yaku --version
+```
+
+Si ya tienes un entorno conda con el stack (flopy, pyemu, pestpp — p. ej. uno
+llamado `modflow-workflow`), basta con instalar el paquete dentro de él:
+
+```bash
+conda activate modflow-workflow
+pip install -e .
+yaku doctor   # verifica binarios y paquetes
 ```
 
 ## Uso rápido
@@ -44,7 +56,7 @@ yaku predict    --project <p>   # escenario con/sin proyecto + incertidumbre
 yaku view3d     --project <p>   # exporta modelo 3D a VTK (ParaView) + PNG
 ```
 
-Ver `docs/preparacion_datos.md` (qué datos entregar) y `docs/plan_mejoras_v2.md`.
+Ver `docs/preparacion_datos.md` (qué datos entregar) y `docs/roadmap.md` (evolución futura).
 
 ## Estructura
 
@@ -52,16 +64,17 @@ Ver `docs/preparacion_datos.md` (qué datos entregar) y `docs/plan_mejoras_v2.md
 src/yaku/   motor (builder, setup, calibration, transport, pathlines, gis, viz, report, cli)
 templates/        plantilla de proyecto (proyecto_base)
 proyectos/        estudios reales (uno por carpeta)
-examples/         caso_demo + ejemplo_regional (end-to-end)
+examples/         caso_demo + ejemplo_clima (end-to-end)
 docs/             arquitectura, instalación ARM64, mapeo ASTM/SEA
 tests/            pytest
 ```
 
-## Ejemplo real
+## Ejemplo integrado
 
-`docs/ejemplo_regional.md` — caso real con datos de Hatari Labs (cuenca andina, DEM ASTER,
-piezómetros): corre el workflow completo (`yaku prep` → malla Voronoi → flujo → informe) y muestra las
-salidas reales. Reproducible con `python examples/ejemplo_regional/correr_ejemplo.py`.
+`examples/ejemplo_clima/` — caso end-to-end TRANSIENTE clima–hidrogeología: datos crudos
+(DEM, shapefiles, clima diario de 3 años) → `yaku prep` → recarga por balance de suelo →
+río → build → run → índices clima-napa → calibración → predicción → informe.
+Reproducible con `python examples/ejemplo_clima/correr_ejemplo.py`.
 
 ## Documentación
 
@@ -77,8 +90,17 @@ salidas reales. Reproducible con `python examples/ejemplo_regional/correr_ejempl
 - **Bordes**: CHD, WEL, RIV, DRN, GHB.
 - **Ríos acoplados (SFR)** y **zona vadosa (UZF)** — cuando hay `uzf.csv`, UZF
   reemplaza RCH+EVT (infiltración + ET con retardo, sin doble contabilidad).
+- **Geometría no plana**: superficies de techo/base por unidad (`base_capa{N}.tif`
+  → `botm_grid_capa{N}.csv`), además del drapeado al DEM.
 - **Transporte (GWT)** y **densidad variable / intrusión salina (BUY)**.
-- **Calibración** (evaluación de ajuste + PEST++ glm/ies) y **predicción con incertidumbre**.
+- **Calibración** (evaluación de ajuste + PEST++ glm/ies) con **pilot points**
+  (`yaku calibrate --pilot-points`, kriging → mapa de K continuo) y
+  **multi-objetivo** (niveles + caudal base SFR/RIV vía `aforos.csv`);
+  **predicción con incertidumbre**.
+- **Clima chileno**: `yaku clima --fuente cr2|camels` convierte series del
+  Explorador Climático CR2 / CAMELS-CL a `clima.csv` → recarga por balance de suelo.
+- **Balance por zonas** (estilo ZoneBudget, por unidad geológica o `zonas_balance.csv`),
+  isopiezas, profundidad de napa y descensos con/sin proyecto en el informe.
 - **Trayectorias** (MODPATH 7) y **mallas Voronoi/DISV** refinadas en pozos.
 - **Solver Newton-Raphson** para celdas convertibles (secado/rehumedecimiento).
 
@@ -90,9 +112,9 @@ y redistribuirlo libremente, **conservando el aviso de copyright y autoría**.
 Si lo usas en estudios, informes o publicaciones, **por favor cítalo**. GitHub muestra
 un botón *"Cite this repository"* a partir de [`CITATION.cff`](CITATION.cff). Cita sugerida:
 
-> Fernández, J. (2026). *yaku: Workflow replicable de modelación de aguas
-> subterráneas (MODFLOW 6 + FloPy, ASTM / SEIA Chile)*, v2.0.0.
-> https://github.com/Joaquinfnz/yaku
+> Fernández, J. (2026). *YAKU-MODFLOW: Workflow replicable de modelación de aguas
+> subterráneas (MODFLOW 6 + FloPy, ASTM / SEIA Chile)*, v1.0.0-beta.
+> https://github.com/Joaquinfnz/YAKU-MODFLOW
 
 ## Créditos y herramientas base
 
@@ -123,5 +145,6 @@ dominio público).
 
 ## Estado
 
-Workflow migrado a paquete instalable (`yaku`, v2.0.0). Ver historial de git
-para la evolución por fases.
+**v1.0.0-beta** — primera versión pública como **YAKU-MODFLOW** (el desarrollo
+interno previo corresponde a yaku/mfworkflow 1.0–2.0; ver `CHANGELOG.md` e
+historial de git para la evolución por fases).

@@ -39,7 +39,6 @@ def load_simulated_heads(hds_path: Path, observations: pd.DataFrame) -> pd.DataF
 
     if has_sp:
         sp_time_map = {i: t for i, t in enumerate(hds.get_times())}
-        default_time = times[-1]
 
     rows = []
     omitidas = 0
@@ -134,7 +133,7 @@ def evaluate_fit(hds_path: Path, observations_path: Path, output_dir: Path) -> p
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not hds_path.exists():
-        raise FileNotFoundError(f"No existe HDS: {hds_path}. Corre 'mfw run' primero.")
+        raise FileNotFoundError(f"No existe HDS: {hds_path}. Corre 'yaku run' primero.")
     if not observations_path.exists():
         raise FileNotFoundError(f"Falta archivo de observaciones: {observations_path}")
 

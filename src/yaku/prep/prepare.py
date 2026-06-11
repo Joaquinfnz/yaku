@@ -40,7 +40,6 @@ def _sample_dem(dem_path: Path, xs, ys):
     import rasterio
 
     with rasterio.open(dem_path) as src:
-        band = src.read(1, masked=True)
         nodata = src.nodata
         grid = np.full((len(ys), len(xs)), np.nan)
         for j, y in enumerate(ys):
@@ -214,6 +213,26 @@ def prepare_from_sources(
         resumen["perfil_litologico"] = [c.get("unidad", f"capa {c['layer']}") for c in capas]
         logger.info("Perfil litologico aplicado: %d unidades con contraste de K/Sy/Ss.", nlay)
 
+    # --- 3b. Geometria no plana: base_capa{N}.tif -> botm_grid_capa{N}.csv ---
+    # Rasters con la cota de BASE de cada unidad hidrogeologica (mismo CRS del DEM).
+    # El motor los usa como superficie de base de la capa (en vez de una cota plana).
+    superficies: list[int] = []
+    for i in range(1, nlay + 1):
+        raster = source_dir / f"base_capa{i}.tif"
+        if not raster.exists():
+            continue
+        try:
+            grid_base = _sample_dem(raster, xs, ys)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("No se pudo remuestrear base_capa%d.tif: %s", i, exc)
+            continue
+        pd.DataFrame(grid_base).to_csv(tablas_dir / f"botm_grid_capa{i}.csv", index=False, header=False)
+        superficies.append(i)
+    if superficies:
+        resumen["superficies_capas"] = superficies
+        logger.info("Geometria no plana: superficie de base remuestreada para capa(s) %s "
+                    "(botm_grid_capa{N}.csv).", ", ".join(map(str, superficies)))
+
     # --- 4. Pozos: shp + caudales.csv -> pozos.csv ---
     pozos_path = _find("pozos")
     if pozos_path is not None:
@@ -253,7 +272,7 @@ def prepare_from_sources(
         pd.DataFrame([{"stress_period": 0, "recharge_m_d": recharge}]
                      ).to_csv(tablas_dir / "recarga_periodos.csv", index=False)
 
-    # --- 6. Copiar capas a datos/gis/ (para mfw gis / motor mfsetup) ---
+    # --- 6. Copiar capas a datos/gis/ (para yaku gis / motor mfsetup) ---
     for name in ("dominio", "pozos", "rio"):
         p = _find(name)
         if p is not None and p.suffix == ".shp":

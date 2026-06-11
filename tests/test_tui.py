@@ -54,7 +54,7 @@ def test_menu_salir_inmediato(monkeypatch):
 
 def test_estado_proyecto_devuelve_sugerencia():
     estado, sugerencia = tui._estado_proyecto("examples/caso_demo")
-    assert any("Insumos" in l for l in estado)
+    assert any("Insumos" in linea for linea in estado)
     assert isinstance(sugerencia, str) and sugerencia  # siempre sugiere un siguiente paso
 
 

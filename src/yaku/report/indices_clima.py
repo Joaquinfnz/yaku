@@ -94,7 +94,8 @@ def calcular_indices(cfg, figuras_dir: Path | None = None) -> dict | None:
     ax.axhline(-1, color="#d62728", lw=0.7, ls="--")
     ax.plot(idx_m, spi3, label="SPI-3", color="#1f77b4", lw=1.0)
     ax.plot(idx_m, spi12, label="SPI-12", color="#2ca02c", lw=1.2)
-    ax.set_title("Índices de sequía meteorológica (SPI)")
+    ax.plot(idx_m, spei6, label="SPEI-6", color="#ff7f0e", lw=1.0, ls=":")
+    ax.set_title("Índices de sequía meteorológica (SPI / SPEI)")
     ax.set_ylabel("SPI"); ax.legend(fontsize=8)
     fig.tight_layout(); p = figuras_dir / "indice_spi.png"
     fig.savefig(p, dpi=150, bbox_inches="tight"); plt.close(fig); figuras["spi"] = p

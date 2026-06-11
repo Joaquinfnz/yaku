@@ -29,7 +29,7 @@ Los insumos se ordenan en tres niveles. `yaku check` usa exactamente esta clasif
 
 | Insumo | Archivo | Para qué |
 |--------|---------|----------|
-| **DEM** | `dem.tif` (raster) | Topografía → `top` real del terreno. *(Ejemplo: ver `examples/ejemplo_regional/datos/fuente/dem.tif`.)* |
+| **DEM** | `dem.tif` (raster) | Topografía → `top` real del terreno. *(Ejemplo: ver `examples/ejemplo_clima/datos/fuente/dem.tif`.)* |
 | **Pozos** | `pozos.shp` (puntos) | Ubicación de los pozos de bombeo. |
 | **Caudales** | `caudales.csv` | Bombeo por pozo (m³/día; negativo = extracción). |
 | **Niveles observados** | `observaciones.shp` o `observaciones_nivel.csv` | Niveles medidos → calibración (RMSE/MAE). |

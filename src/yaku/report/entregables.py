@@ -9,7 +9,6 @@ que indexa todo con versiones y hash de las entradas.
 
 from __future__ import annotations
 
-import json
 import logging
 import shutil
 from datetime import datetime
@@ -39,7 +38,7 @@ def _copiar(src: Path | None, dest_dir: Path) -> str | None:
 def _escribir_plan_seguimiento(destino: Path, cfg, res) -> None:
     """Plan de seguimiento con una fila por punto de observacion y umbrales reales.
 
-    El umbral del nivel = descenso maximo predicho (de 'mfw predict'); el del caudal base =
+    El umbral del nivel = descenso maximo predicho (de 'yaku predict'); el del caudal base =
     intercambio rio-acuifero simulado. Si no hay datos, deja una plantilla editable.
     """
     import pandas as pd
@@ -76,7 +75,7 @@ def armar_entregables(cfg, perfil: str = "sea") -> Path:
     res = recolectar_resultados(cfg)
     if res.head is None:
         raise FileNotFoundError(
-            f"No hay resultados en {cfg.resultados_dir} (corre 'mfw run' antes de entregables)."
+            f"No hay resultados en {cfg.resultados_dir} (corre 'yaku run' antes de entregables)."
         )
 
     dest = cfg.informe_dir / "entregables_seia"

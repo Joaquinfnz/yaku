@@ -1,7 +1,7 @@
 """Contrato de insumos del modelo: qué archivos se necesitan, en tres niveles.
 
 Una única fuente de verdad sobre qué hay que entregar antes de modelar, para que la
-TUI (`mfw tui`), el comando `mfw check` y la validación de `build/run` hablen todos el
+TUI (`yaku tui`), el comando `yaku check` y la validación de `build/run` hablen todos el
 mismo idioma:
 
 - **OBLIGATORIO**: mínimo imprescindible para construir/correr el modelo.
@@ -157,5 +157,5 @@ def formatear(reporte: ReporteInsumos, *, raiz: Path | None = None) -> list[str]
         lineas.append("\n=> Mínimos completos: puedes construir y correr el modelo.")
     else:
         lineas.append(f"\n=> FALTAN obligatorios: {', '.join(reporte.faltan(OBLIGATORIO))}. "
-                      "Complétalos antes de construir/correr (mfw prep ayuda a generarlos).")
+                      "Complétalos antes de construir/correr (yaku prep ayuda a generarlos).")
     return lineas

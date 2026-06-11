@@ -78,6 +78,14 @@ def _seccion_datos(d: DocBuilder, n: str, res) -> bool:
         if res.balance_por_capa is not None:
             d.h2("Balance por capa / sector (m³/día)")
             _tabla(d, res.balance_por_capa, max_rows=30)
+        bz = getattr(res, "balance_por_zonas", None)
+        if bz and bz.get("df") is not None:
+            d.h2("Balance por zonas (m³/día)")
+            d.p("Fuentes y sumideros por zona del acuífero (estilo ZoneBudget); "
+                "no incluye intercambio lateral entre zonas.")
+            _tabla(d, bz["df"], max_rows=40)
+            if bz.get("figura"):
+                d.image(bz["figura"], caption="Entradas y salidas por zona y componente")
         return True
 
     if "construc" in n or "diseno" in n or "numerico" in n:

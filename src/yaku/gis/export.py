@@ -32,7 +32,7 @@ def exportar_rasters(cfg, out_dir: Path | None = None) -> dict:
     model = cfg.model_name
     hds = res_dir / f"{model}.hds"
     if not hds.exists():
-        logger.error("export-gis: no existe %s (corre 'mfw run' primero).", hds.name)
+        logger.error("export-gis: no existe %s (corre 'yaku run' primero).", hds.name)
         return {}
 
     pm = cfg.datos_dir / "parametros_modelo.csv"

@@ -1,8 +1,14 @@
 # Roadmap — integraciones futuras
 
 Ideas para hacer el modelo **más complejo y más exacto**, ordenadas por impacto.
-No están implementadas todavía; son el plan de evolución de `yaku`.
-Autor: Joaquín Fernández.
+Plan de evolución de YAKU-MODFLOW. Autor: Joaquín Fernández.
+
+> **Hecho al 2026-06-10:** lectores CR2/CAMELS-CL (`yaku clima`) + balance de suelo
+> (`yaku recarga`); SFR/UZF/DRN/GHB/EVT; Newton-Raphson; **pilot points** con kriging;
+> calibración **multi-objetivo** (niveles + caudal base); **ZoneBudget por zonas**;
+> geometría no plana por unidad; CI + pre-commit + CHANGELOG. Lo de abajo se mantiene
+> como referencia; lo pendiente real: MAW/LAK/MVR, XT3D/GridGen/DISU, FOSM/data-worth,
+> Morris/Sobol, conda-lock/pixi, TUI Textual, wizard `yaku init`.
 
 ## 1. Recarga climática (datos chilenos) — *mayor impacto*
 Convertir series de clima en **recarga distribuida y transiente** mediante un

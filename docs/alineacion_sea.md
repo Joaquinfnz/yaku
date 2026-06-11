@@ -23,12 +23,12 @@ Anexos (archivos del modelo, metadatos, trazabilidad).
 | Discretización: grilla DIS / DISV-Voronoi multicapa | sí | exige | sí | ✅ `mesh`, `build` |
 | Mapa de carga hidráulica por capa | sí | exige | sí | ✅ informe |
 | **Balance hídrico global + discrepancia %** | sí | **exige** | sí | ✅ (`Mf6ListBudget`, gate ≤1%) |
-| Balance por **zonas/sectores** (regional vs detalle) | sí | pide | sí | 🟡 por capa; falta por unidad/sector definido |
+| Balance por **zonas/sectores** (regional vs detalle) | sí | pide | sí | ✅ por capa + por zonas (`zonas_balance.csv` o unidades geológicas) |
 | **Calibración** niveles permanente (RMSE, sesgo, scatter, residuos) | sí | **exige** | sí | ✅ |
 | **Validación** (split-sample) | sí | pide | sí | ✅ grupo `validacion` |
 | **Análisis de sensibilidad** (OAT por parámetro) | sí | pide | sí | ✅ `sensibilidad` + sección en el informe |
 | Predicción **con/sin proyecto** (descensos) | sí | **exige** | sí | ✅ `predict` |
-| Incertidumbre (ensemble) | sí | pide | sí | 🟡 Monte Carlo; falta **PEST++-IES** formal |
+| Incertidumbre (ensemble) | sí | pide | sí | ✅ Monte Carlo + **PEST++-IES** (`--engine pestpp-ies`) |
 | Profundidad de napa + umbral **GDE** (vegas/bofedales) | sí | pide | sí | ✅ napa + GDE |
 | **Caudal base** río–acuífero | sí | pide | sí | ✅ |
 | Zonas de captura / tiempos de viaje (MODPATH 7) | sí | pide | sí | ✅ `pathlines` |
@@ -46,19 +46,23 @@ Anexos (archivos del modelo, metadatos, trazabilidad).
 **Hechos (2026-06-05):** ✅ secciones verticales · ✅ export a GIS (`export-gis`) ·
 ✅ análisis de sensibilidad (`sensibilidad`).
 
+**Hechos (2026-06-10):** ✅ balance por zonas (estilo ZoneBudget) · ✅ pilot points
+(`yaku calibrate --pilot-points`) · ✅ multi-objetivo niveles + caudal base (`aforos.csv`) ·
+✅ geometría no plana (`base_capa{N}.tif`) · ✅ lectores CR2/CAMELS-CL (`yaku clima`) ·
+✅ CI + pre-commit + CHANGELOG.
+
 **Quedan (outputs):**
-1. **Balance regional vs. detalle** (ZoneBudget por sectores definidos por el usuario). 🟡 (hay por capa)
-2. **Figura del modelo conceptual** (esquema de unidades, recarga/descarga, bordes). ⬜
-3. **Mapas de descenso por capa y por escenario**. 🟡
+1. **Figura del modelo conceptual** (esquema de unidades, recarga/descarga, bordes). 🟡 (hay mapa en planta)
+2. **Mapas de descenso por capa y por escenario**. 🟡
 
 **Mejoras de modelación (ciencia + exactitud, mayor esfuerzo — roadmap):**
-- **SFR** (caudal base físico con aforos) · **UZF/EVT** (ET y GDE) · **recarga distribuida por zona**.
-- **Pilot points** (`pyemu.PstFrom`) + **PEST++-IES** + **data-worth** (defendible ante el SEA).
-- **XT3D** (anisotropía), **MAW/LAK/DRN/HFB** (pozos multicapa, lagunas, drenes, fallas).
+- **Data-worth / FOSM** (qué dato nuevo reduce más la incertidumbre; justifica el monitoreo).
+- **XT3D** (anisotropía), **MAW/LAK/MVR/HFB** (pozos multicapa, lagunas, movers, fallas).
+- Sensibilidad global (Morris/Sobol) sobre la OAT actual.
 
 **Producto (consultoría privada):**
-- `CHANGELOG.md` + versionado semántico, `pre-commit`, GUI **Streamlit** para informes sin CLI.
-- **Bundle reproducible** (datos + config + lockfile + notebook + hash).
+- ✅ `CHANGELOG.md` + `pre-commit` + CI (2026-06-10). Quedan: GUI **Streamlit** para
+  informes sin CLI y **bundle reproducible** (datos + config + lockfile + notebook + hash).
 
 ## Fuentes
 - Guía para el uso de modelos de aguas subterráneas en el SEIA (SEA, 2012):

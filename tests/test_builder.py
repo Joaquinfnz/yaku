@@ -14,7 +14,7 @@ def test_build_simulation_construye_paquetes(demo_data_dir, tmp_path):
     gwf = sim.get_model("m")
     assert gwf is not None
     # DIS, IC, NPF, RCHA, CHD presentes como minimo
-    paquetes = set(gwf.package_type_dict.keys())
+    paquetes = {p.package_type for p in gwf.packagelist}
     assert {"dis", "ic", "npf"} <= paquetes
     assert (tmp_path / "mfsim.nam").exists()
 
@@ -96,7 +96,7 @@ def test_build_sfr_con_simulacion(demo_data_dir, tmp_path):
     builder = ModflowModelBuilder(demo_data_dir, tmp_path, model_name="m")
     sim = builder.build_simulation()
     gwf = sim.get_model("m")
-    paquetes = set(gwf.package_type_dict.keys())
+    paquetes = {p.package_type for p in gwf.packagelist}
     assert "sfr" in paquetes or "sfr" not in paquetes
 
 

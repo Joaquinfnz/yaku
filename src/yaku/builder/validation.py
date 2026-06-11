@@ -17,7 +17,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 # Rangos de plausibilidad (generan advertencia, no error)
 K_MIN, K_MAX = 1e-6, 1e4          # m/dia
 RCH_MAX = 0.05                     # m/dia (~18 m/ano, ya muy alto)

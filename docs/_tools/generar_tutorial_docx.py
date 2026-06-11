@@ -31,7 +31,7 @@ def build(out_docx: Path) -> Path:
 
     # ---------- PORTADA ----------
     d.cover(
-        "yaku",
+        "YAKU-MODFLOW",
         "Modelación de aguas subterráneas con MODFLOW 6 + FloPy",
         "Tutorial general de uso  -  Autor: Joaquín Fernández",
     )
@@ -42,13 +42,14 @@ def build(out_docx: Path) -> Path:
     d.h2("Contenido")
     for t in [
         "Qué es esto y para quién", "Qué puedes lograr (ejemplos reales)",
-        "Conceptos mínimos (sin pánico)", "Instalación y chequeo (mfw doctor)",
+        "Conceptos mínimos (sin pánico)", "Instalación y chequeo (yaku doctor)",
         "Empezar guiado: la pantalla onboard", "La idea clave: un proyecto = una carpeta",
-        "Qué datos necesitas: insumos y mfw check", "Preparación de datos (mfw prep)",
-        "Recarga desde el clima (mfw recarga)", "Acoplamiento clima-hidrogeologia (transiente e indices)",
+        "Qué datos necesitas: insumos y yaku check", "Preparación de datos (yaku prep)",
+        "Recarga desde el clima (yaku recarga)", "Clima chileno: CR2 y CAMELS-CL (yaku clima)",
+        "Acoplamiento clima-hidrogeologia (transiente e indices)",
         "Unidades de medida (entradas y salidas)",
         "Mapa de modulos: donde cambiar cada cosa", "Tutorial paso a paso (caso real, de principio a fin)",
-        "Los comandos de mfw, uno por uno", "Los dos motores: simple y profesional (GIS)",
+        "Los comandos de yaku, uno por uno", "Los dos motores: simple y profesional (GIS)",
         "Mallas Voronoi / grilla multicapa (DISV)", "Calibración: ¿el modelo se parece a la realidad?",
         "Predicción y análisis de incertidumbre", "Trayectorias y zonas de captura (MODPATH 7)",
         "Transporte e intrusión salina", "Visualización 3D (litología, ríos, pozos)",
@@ -102,21 +103,21 @@ def build(out_docx: Path) -> Path:
     ])
 
     # ---------- 4 ----------
-    d.h1("Instalación y chequeo (mfw doctor)")
+    d.h1("Instalación y chequeo (yaku doctor)")
     d.p("Requiere Miniconda/Anaconda. Ubícate en la carpeta del proyecto y crea el entorno:")
     d.code("cd ~/Desktop/modflow-workflow\nconda env create -f environment.yml\nconda activate modflow-workflow")
     d.p("Verifica que todo esté instalado (binarios y paquetes) con un solo comando:")
-    d.code("mfw doctor")
+    d.code("yaku doctor")
     d.info_box("macOS Apple Silicon (M1/M2/M3)",
                "Todo corre nativo. Si faltan binarios de MODFLOW/MODPATH/Triangle, instalalos con "
-               "'get-modflow :flopy'. mfw doctor te dice exactamente qué falta.")
+               "'get-modflow :flopy'. yaku doctor te dice exactamente qué falta.")
 
     # ---------- onboard ----------
     d.h1("Empezar guiado: la pantalla onboard")
-    d.p("Si no te acuerdas de los comandos, no importa: escribe solo 'mfw' (o 'mfw onboard') y se "
+    d.p("Si no te acuerdas de los comandos, no importa: escribe solo 'yaku' (o 'yaku onboard') y se "
         "abre una pantalla de inicio que te guia. Muestra el estado del entorno, te deja elegir o "
         "crear un proyecto, y dentro del proyecto te dice qué tienes hecho y cuál es el siguiente paso.")
-    d.code("mfw            # abre la pantalla onboard (igual que 'mfw onboard')")
+    d.code("yaku            # abre la pantalla onboard (igual que 'yaku onboard')")
     d.p("Dentro de un proyecto, el onboard muestra un panel de estado y las etapas agrupadas por "
         "paquetes (A. insumos y malla, B. modelo, C. calibración, D. avanzados, E. resultados):")
     d.code("Estado del proyecto\n"
@@ -143,24 +144,24 @@ def build(out_docx: Path) -> Path:
         "config.yaml + datos/; los resultados se regeneran.")
 
     # ---------- insumos ----------
-    d.h1("Qué datos necesitas: insumos y mfw check")
-    d.p("Antes de modelar conviene saber que tienes y que falta. 'mfw check' revisa los insumos del "
+    d.h1("Qué datos necesitas: insumos y yaku check")
+    d.p("Antes de modelar conviene saber que tienes y que falta. 'yaku check' revisa los insumos del "
         "proyecto y los clasifica en tres niveles:")
     d.table(["Nivel", "Qué son", "Ejemplos"], [
         ["Obligatorios", "Minimo para correr el modelo.", "dominio.shp, parámetros_modelo.csv, capas_modelo.csv, contornos_carga.csv, stress_periods.csv"],
         ["Importantes", "Muy recomendados (suben la calidad).", "dem.tif, pozos.shp + caudales.csv, observaciones_nivel.csv"],
         ["Opcionales", "Habilitan procesos extra.", "río.shp, recarga_periodos.csv, parámetros_calibración.csv, geología.shp, clima.csv"],
     ])
-    d.code("mfw datos --project proyectos/mi_proyecto    # crea plantillas de lo que falta\nmfw check --project proyectos/mi_proyecto")
+    d.code("yaku datos --project proyectos/mi_proyecto    # crea plantillas de lo que falta\nmfw check --project proyectos/mi_proyecto")
     d.info_box("Bloqueo de seguridad",
                "Si faltan los obligatorios, yaku no te deja construir/correr y te dice cuales "
                "faltan. Hay una carpeta de ejemplo de insumos en templates/insumos_ejemplo/ con un "
                "LEEME que separa obligatorios / importantes / opcionales.")
 
     # ---------- 6 ----------
-    d.h1("Preparación de datos (mfw prep)")
+    d.h1("Preparación de datos (yaku prep)")
     d.p("Tu trabajas en shapefile, DEM y CSV. Pones esos archivos crudos en datos/fuente/ y "
-        "mfw prep los convierte en las tablas del modelo. Qué entregar y en qué formato:")
+        "yaku prep los convierte en las tablas del modelo. Qué entregar y en qué formato:")
     d.table(["Dato", "Formato", "Archivo en datos/fuente/"], [
         ["DEM del lugar", "raster GeoTIFF", "dem.tif"],
         ["Borde del modelo", "shapefile polígono", "dominio.shp"],
@@ -168,19 +169,24 @@ def build(out_docx: Path) -> Path:
         ["Caudales de bombeo", "CSV (nombre, stress_period, rate_m3_dia)", "caudales.csv"],
         ["Rios / canales", "shapefile línea", "río.shp"],
         ["Niveles observados", "shapefile puntos + CSV", "observaciones.shp + niveles.csv"],
+        ["Base de cada unidad (opcional)", "raster GeoTIFF", "base_capa1.tif, base_capa2.tif, ..."],
+        ["Perfil litologico (opcional)", "CSV (layer, kx, kz, sy, ss, iconvert)", "perfil_litologico.csv"],
     ])
-    d.code("mfw prep --project proyectos/mi_proyecto --cellsize 100 --nlay 1 --espesor 50")
+    d.code("yaku prep --project proyectos/mi_proyecto --cellsize 100 --nlay 1 --espesor 50")
+    d.p("Si entregas rasters base_capa{N}.tif (cota de base de cada unidad, de sondajes o "
+        "geofisica), prep los remuestrea a la grilla y el modelo deja de ser plano: cada capa "
+        "sigue su superficie real, con espesor minimo garantizado (geometria no plana).")
     d.info_box("Unidades y CRS",
                "Todo en metros (CRS proyectado, p.ej. UTM), caudal en m3/dia. Todos los archivos "
                "en el mismo sistema de coordenadas. Detalle en docs/preparación_datos.md.")
 
     # ---------- recarga ----------
-    d.h1("Recarga desde el clima (mfw recarga)")
+    d.h1("Recarga desde el clima (yaku recarga)")
     d.p("La recarga (el agua de lluvia que llega al acuífero) es uno de los datos más difíciles. En "
         "vez de inventar un numero, puedes calcularla desde tu serie climatica, DENTRO del workflow "
         "(sin programas externos). Pones datos/fuente/clima.csv con columnas fecha, precip_mm, "
         "temp_c, et0_mm y corres:")
-    d.code("mfw recarga --project proyectos/mi_proyecto --metodo balance")
+    d.code("yaku recarga --project proyectos/mi_proyecto --metodo balance")
     d.p("Usa un balance de suelo simple (Thornthwaite-Mather): cada mes, lo que llueve menos lo que "
         "se evapora llena el suelo; el excedente es recarga. Escribe recarga_periodos.csv, que el "
         "modelo usa como recarga variable en el tiempo. Si no tienes ET, usa --método coeficiente "
@@ -188,6 +194,21 @@ def build(out_docx: Path) -> Path:
     d.info_box("Sin salir del workflow",
                "Esto reemplaza tener que usar otro modelo hidrológico. Para casos de cuencas con "
                "deshielo (Patagonia) hay un modulo de glaciares previsto para una version futura.")
+
+    # ---------- clima CR2 / CAMELS ----------
+    d.h1("Clima chileno: CR2 y CAMELS-CL (yaku clima)")
+    d.p("No necesitas armar clima.csv a mano: el comando yaku clima convierte los formatos de "
+        "las fuentes chilenas mas usadas al formato del workflow.")
+    d.code("yaku clima --project proyectos/mi_proyecto --fuente cr2 --precip descarga_explorador.csv\n"
+           "yaku clima --project proyectos/mi_proyecto --fuente camels --precip precip_cr2met_day.txt --estacion 8332001")
+    d.bullet("CR2 (explorador.cr2.cl): acepta series diarias o mensuales, con metadatos antes del "
+             "encabezado, columnas fecha o agno/mes/dia, y nodata -9999.")
+    d.bullet("CAMELS-CL (camels.cr2.cl): series por cuenca; eliges la tuya con --estacion (gauge_id).")
+    d.bullet("Puedes sumar temperatura (--temp) y evapotranspiracion (--et0); quedan como columnas "
+             "extra de clima.csv y mejoran el balance de suelo.")
+    d.info_box("Flujo completo del clima",
+               "yaku clima (CR2/CAMELS -> clima.csv) -> yaku recarga (balance de suelo -> recarga "
+               "por periodo) -> yaku indices (SPI/SPEI, flujo base, memoria del acuifero).")
 
     # ---------- clima-hidrogeologia ----------
     d.h1("Acoplamiento clima–hidrogeología (transiente e índices)")
@@ -201,13 +222,13 @@ def build(out_docx: Path) -> Path:
         ["datos/fuente/caudal_rio.csv", "Caudal del rio MEDIDO (fecha, caudal_m3_d).", "opcional (valida)"],
     ])
     d.h2("2) Recarga diaria y transiente")
-    d.code("mfw recarga --project proyectos/mi_proyecto --metodo balance --transiente --k-percolacion 0.05")
+    d.code("yaku recarga --project proyectos/mi_proyecto --metodo balance --transiente --k-percolacion 0.05")
     d.p("Detecta que el clima es diario, corre el balance de suelo dia a dia (con un retardo de "
         "percolacion k_percolacion) y agrega la recarga a periodos mensuales. Con --transiente "
         "escribe ademas stress_periods.csv (1.er periodo permanente + el resto transiente), asi el "
         "modelo corre toda la serie. La napa sube con las lluvias y baja en los anios secos.")
     d.h2("3) Indices clima–hidrogeologia")
-    d.code("mfw indices --project proyectos/mi_proyecto")
+    d.code("yaku indices --project proyectos/mi_proyecto")
     d.p("Calcula y grafica (en resultados/indices/):")
     d.bullet("SPI / SPEI: indices de sequia meteorologica (precipitacion y precip-ET estandarizadas).")
     d.bullet("Indice de aridez (P/PET) y fraccion de recarga (recarga/precipitacion).")
@@ -250,7 +271,7 @@ def build(out_docx: Path) -> Path:
         ["drn.csv (opcional)", "elev_m / cond_m2_d", "m / m2/d", "Drenes/manantiales (DRN)."],
         ["ghb.csv (opcional)", "head_m / cond_m2_d", "m / m2/d", "Borde de carga general (GHB)."],
         ["evt_periodos.csv (opcional)", "rate_m_d / extinction_depth_m", "m/d / m", "ET freatica (vegas/GDE)."],
-        ["recarga_periodos.csv", "recharge_m_d", "m/d", "Recarga por periodo (de mfw recarga)."],
+        ["recarga_periodos.csv", "recharge_m_d", "m/d", "Recarga por periodo (de yaku recarga)."],
         ["recarga_zonas.csv", "coef_inf por celda", "fraccion", "Reparte la recarga por unidad geologica."],
         ["observaciones_nivel.csv", "head_observado_m", "m", "Nivel medido para calibrar."],
         ["observaciones_nivel.csv", "peso", "adimensional", "Peso del dato en la calibracion."],
@@ -285,7 +306,7 @@ def build(out_docx: Path) -> Path:
         ["Almacenamiento", "datos/tablas/capas_modelo.csv", "sy, ss", "adim, 1/m"],
         ["K por zona geologica", "datos/fuente/geologia.shp", "K_md", "m/d"],
         ["Coeficiente de infiltracion", "datos/fuente/geologia.shp", "coef_inf", "fraccion"],
-        ["Recarga (total/temporal)", "datos/tablas/recarga_periodos.csv", "recharge_m_d (o mfw recarga)", "m/d"],
+        ["Recarga (total/temporal)", "datos/tablas/recarga_periodos.csv", "recharge_m_d (o yaku recarga)", "m/d"],
         ["Reparto espacial de recarga", "datos/fuente/geologia.shp -> recarga_zonas.csv", "coef_inf (lo rasteriza prep)", "fraccion"],
         ["Bordes de carga", "datos/tablas/contornos_carga.csv", "carga_m", "m"],
         ["Bombeo", "datos/tablas/caudales.csv / pozos.csv", "rate_m3_dia (negativo)", "m3/d"],
@@ -293,21 +314,21 @@ def build(out_docx: Path) -> Path:
         ["Drenes / manantiales", "datos/tablas/drn.csv (opcional)", "elev_m, cond_m2_d", "m, m2/d"],
         ["Borde regional (semi-permeable)", "datos/tablas/ghb.csv (opcional)", "head_m, cond_m2_d", "m, m2/d"],
         ["ET freatica / vegas (GDE)", "datos/tablas/evt_periodos.csv (opcional)", "rate_m_d, extinction_depth_m", "m/d, m"],
-        ["Correr transiente con clima", "mfw recarga --transiente", "clima.csv diario -> stress_periods", "dias"],
-        ["Indices clima-hidrogeologia", "mfw indices", "SPI/SPEI, BFI, memoria napa-clima", "-"],
-        ["Geometria / espesor", "parametros_modelo.csv o mfw prep --espesor", "top, botm / --espesor", "m"],
+        ["Correr transiente con clima", "yaku recarga --transiente", "clima.csv diario -> stress_periods", "dias"],
+        ["Indices clima-hidrogeologia", "yaku indices", "SPI/SPEI, BFI, memoria napa-clima", "-"],
+        ["Geometria / espesor", "parametros_modelo.csv o yaku prep --espesor", "top, botm / --espesor", "m"],
         ["Techo siguiendo el terreno", "config.yaml", "modelo.drapear_dem: true", "-"],
         ["Tiempos / regimen", "datos/tablas/stress_periods.csv", "perlen_d, nstp, steady_state", "dias"],
-        ["Celda y numero de capas", "mfw prep", "--cellsize, --nlay, --espesor", "m"],
+        ["Celda y numero de capas", "yaku prep", "--cellsize, --nlay, --espesor", "m"],
         ["Parametros a calibrar", "datos/tablas/parametros_calibracion.csv", "valor_inicial, limites, transformacion", "-"],
         ["Solver", "config.yaml", "solver.complexity (SIMPLE/MODERATE/COMPLEX)", "-"],
-        ["Perfil de informe", "config.yaml o mfw report --perfil", "informe.perfil (astm/sea)", "-"],
+        ["Perfil de informe", "config.yaml o yaku report --perfil", "informe.perfil (astm/sea)", "-"],
         ["Texto del informe", "informe/secciones.md", "bloques '## titulo'", "-"],
     ])
     d.p("Y si quieres extender el motor (programar algo nuevo), cada modulo del codigo tiene "
         "una sola responsabilidad:")
     d.table(["Modulo (src/yaku/)", "Responsabilidad"], [
-        ["cli.py", "Comandos mfw (new/prep/build/run/calibrate/predict/report...)."],
+        ["cli.py", "Comandos yaku (new/prep/build/run/calibrate/predict/report...)."],
         ["config.py", "Lee config.yaml y resuelve rutas del proyecto."],
         ["prep/prepare.py, prep/recarga.py", "Arma tablas desde insumos; recarga desde clima."],
         ["builder/model_builder.py", "CSV -> MODFLOW 6 (DIS/NPF/RIV/CHD/RCH/WEL), drapeado, solver."],
@@ -323,56 +344,57 @@ def build(out_docx: Path) -> Path:
     # ---------- 7 ----------
     d.h1("Tutorial paso a paso (caso real, de principio a fin)")
     d.p("El flujo completo de un estudio, en orden. Puedes hacerlo todo desde el onboard (escribe "
-        "'mfw' y sigue el siguiente paso) o con los comandos:")
+        "'yaku' y sigue el siguiente paso) o con los comandos:")
     d.h2("Paso 1 - Crear el proyecto según el tipo de estudio")
-    d.code('mfw new mina_X --tipo dewatering        # dewatering | intrusion | gde | general')
+    d.code('yaku new mina_X --tipo dewatering        # dewatering | intrusion | gde | general')
     d.p("El tipo orienta los objetivos y deja el perfil de informe en 'sea' (SEIA).")
     d.h2("Paso 2 - Poner los insumos y revisarlos")
-    d.p("Copia tus archivos crudos a datos/fuente/, corre mfw prep (sección de preparación) y, si "
-        "tienes clima, mfw recarga. Revisa que no falte nada:")
-    d.code("mfw check --project proyectos/mina_X")
+    d.p("Copia tus archivos crudos a datos/fuente/, corre yaku prep (sección de preparación) y, si "
+        "tienes clima, yaku recarga. Revisa que no falte nada:")
+    d.code("yaku check --project proyectos/mina_X")
     d.h2("Paso 3 - (Opcional) malla multicapa y geología")
-    d.code("mfw mesh --project proyectos/mina_X --run    # DISV multicapa drapeado bajo el DEM")
+    d.code("yaku mesh --project proyectos/mina_X --run    # DISV multicapa drapeado bajo el DEM")
     d.h2("Paso 4 - Correr el modelo")
-    d.code("mfw pipeline --project proyectos/mina_X       # build + run + informe")
+    d.code("yaku pipeline --project proyectos/mina_X       # build + run + informe")
     d.p("Construye el modelo (recortando el dominio real con idomain), corre MODFLOW 6 y genera "
         "figuras e informe. Así se ve el mapa de carga hidráulica:")
     d.image(IMG / "caso_demo_heads.png", "Figura 1. Mapa de carga hidráulica final.", 4.6)
     d.p("Y la evolucion del nivel en el tiempo (modelos transientes):")
     d.image(IMG / "caso_demo_timeseries.png", "Figura 2. Serie temporal de carga en un pozo.", 4.6)
     d.h2("Paso 5 - Calibrar, predecir y entregar")
-    d.code("mfw calibrate  --project proyectos/mina_X\n"
-           "mfw predict    --project proyectos/mina_X --uncertainty 30\n"
-           "mfw entregables --project proyectos/mina_X --perfil sea")
+    d.code("yaku calibrate  --project proyectos/mina_X\n"
+           "yaku predict    --project proyectos/mina_X --uncertainty 30\n"
+           "yaku entregables --project proyectos/mina_X --perfil sea")
     d.p("Quedas con el ajuste, los escenarios con/sin proyecto, la incertidumbre y el paquete SEIA "
         "completo listo para presentar.")
 
     # ---------- 8 ----------
-    d.h1("Los comandos de mfw, uno por uno")
+    d.h1("Los comandos de yaku, uno por uno")
     d.table(["Comando", "Qué hace"], [
-        ["mfw  (sin nada) / onboard", "Pantalla de inicio guiada: estado del proyecto + siguiente paso."],
-        ["mfw doctor", "Chequea el entorno (mf6, mp7, triangle, pestpp, paquetes)."],
-        ["mfw new <nombre> --tipo <t>", "Crea un proyecto (tipo: dewatering | intrusion | gde | general)."],
-        ["mfw datos --project <p>", "Asistente: crea plantillas editables de las tablas que faltan."],
-        ["mfw check --project <p>", "Revisa los insumos (obligatorios / importantes / opcionales)."],
-        ["mfw prep --project <p>", "Datos crudos (DEM, shp, csv) -> tablas del modelo."],
-        ["mfw recarga --project <p>", "clima.csv (precip/ET) -> recarga por periodo (balance de suelo)."],
-        ["mfw mesh --project <p>", "Malla Voronoi/DISV multicapa refinada (--run la corre)."],
-        ["mfw gis --project <p>", "Shapefile/GeoJSON -> tablas row/col (avisa CRS)."],
-        ["mfw build / run --project <p>", "Construye / ejecuta MODFLOW 6 (usa idomain del dominio)."],
-        ["mfw calibrate --project <p>", "Ajuste + PEST++ (--run --engine pestpp-ies)."],
-        ["mfw sensibilidad --project <p>", "Sensibilidad de los parametros (OAT, RMSE +/-10%)."],
-        ["mfw predict --project <p>", "Escenario con/sin proyecto + incertidumbre."],
-        ["mfw transport / salina --project <p>", "Transporte de solutos / intrusión salina."],
-        ["mfw pathlines --project <p>", "Trayectorias MODPATH 7 (zonas de captura)."],
-        ["mfw view3d --project <p>", "3D a VTK: carga, litología (K), recarga, río y pozos."],
-        ["mfw export-gis --project <p>", "Cargas y profundidad de napa a raster GeoTIFF (QGIS)."],
-        ["mfw report --project <p>", "Informe PDF data-driven (--perfil astm | sea)."],
-        ["mfw entregables --project <p>", "Paquete SEIA: informe + figuras + tablas + plan de seguimiento."],
-        ["mfw pipeline --project <p>", "build + run + report, todo seguido."],
+        ["yaku  (sin nada) / onboard", "Pantalla de inicio guiada: estado del proyecto + siguiente paso."],
+        ["yaku doctor", "Chequea el entorno (mf6, mp7, triangle, pestpp, paquetes)."],
+        ["yaku new <nombre> --tipo <t>", "Crea un proyecto (tipo: dewatering | intrusion | gde | general)."],
+        ["yaku datos --project <p>", "Asistente: crea plantillas editables de las tablas que faltan."],
+        ["yaku check --project <p>", "Revisa los insumos (obligatorios / importantes / opcionales)."],
+        ["yaku prep --project <p>", "Datos crudos (DEM, shp, csv) -> tablas del modelo."],
+        ["yaku clima --project <p> --fuente cr2|camels", "Series CR2 / CAMELS-CL -> clima.csv del proyecto."],
+        ["yaku recarga --project <p>", "clima.csv (precip/ET) -> recarga por periodo (balance de suelo)."],
+        ["yaku mesh --project <p>", "Malla Voronoi/DISV multicapa refinada (--run la corre)."],
+        ["yaku gis --project <p>", "Shapefile/GeoJSON -> tablas row/col (avisa CRS)."],
+        ["yaku build / run --project <p>", "Construye / ejecuta MODFLOW 6 (usa idomain del dominio)."],
+        ["yaku calibrate --project <p>", "Ajuste + PEST++ (--run --engine pestpp-ies); --pilot-points = mapa de K; aforos.csv = multi-objetivo."],
+        ["yaku sensibilidad --project <p>", "Sensibilidad de los parametros (OAT, RMSE +/-10%)."],
+        ["yaku predict --project <p>", "Escenario con/sin proyecto + incertidumbre."],
+        ["yaku transport / salina --project <p>", "Transporte de solutos / intrusión salina."],
+        ["yaku pathlines --project <p>", "Trayectorias MODPATH 7 (zonas de captura)."],
+        ["yaku view3d --project <p>", "3D a VTK: carga, litología (K), recarga, río y pozos."],
+        ["yaku export-gis --project <p>", "Cargas y profundidad de napa a raster GeoTIFF (QGIS)."],
+        ["yaku report --project <p>", "Informe PDF data-driven (--perfil astm | sea)."],
+        ["yaku entregables --project <p>", "Paquete SEIA: informe + figuras + tablas + plan de seguimiento."],
+        ["yaku pipeline --project <p>", "build + run + report, todo seguido."],
     ])
-    d.info_box("Ayuda a mano", "Cualquier comando admite -h, por ejemplo 'mfw predict -h'. "
-               "Escribe 'mfw' solo para abrir el onboard con el estado del proyecto.")
+    d.info_box("Ayuda a mano", "Cualquier comando admite -h, por ejemplo 'yaku predict -h'. "
+               "Escribe 'yaku' solo para abrir el onboard con el estado del proyecto.")
 
     # ---------- 9 ----------
     d.h1("Los dos motores: simple y profesional (GIS)")
@@ -387,7 +409,7 @@ def build(out_docx: Path) -> Path:
     d.h1("Mallas Voronoi / grilla refinada (DISV)")
     d.p("Las grillas regulares gastan celdas. Una malla Voronoi refina solo donde importa "
         "(pozos, ríos), como hace gidahatari. Se genera desde el borde con:")
-    d.code("mfw mesh --project proyectos/mi_proyecto --cell-size 150 --refine 5 --run")
+    d.code("yaku mesh --project proyectos/mi_proyecto --cell-size 150 --refine 5 --run")
     d.image(IMG / "malla" / "malla_voronoi.png", "Figura 3. Malla Voronoi refinada alrededor de los pozos (puntos rojos).", 4.4)
     d.p("El flag --run construye y corre un modelo MODFLOW 6 DISV sobre esa malla para verificarla:")
     d.image(IMG / "malla" / "voronoi_cargas.png", "Figura 4. Flujo resuelto sobre la malla Voronoi (DISV).", 4.2)
@@ -399,13 +421,25 @@ def build(out_docx: Path) -> Path:
     d.numbered("Evaluación de ajuste: error (RMSE, MAE) entre observado y simulado.")
     d.numbered("PEST++ GLM: ajuste automatico por gradiente + sensibilidad.")
     d.numbered("PEST++ IES (ensemble): history matching + incertidumbre.")
-    d.code("mfw calibrate --project proyectos/mi_proyecto --run --engine pestpp-ies")
+    d.code("yaku calibrate --project proyectos/mi_proyecto --run --engine pestpp-ies")
     d.image(IMG / "calibración" / "grafico_observado_vs_simulado.png",
             "Figura 5. Observado vs simulado; puntos sobre la línea 1:1 = ajuste perfecto.", 4.0)
     d.info_box("Criterio de aceptacion SEA",
                "La Guia SEA 2012 considera ACEPTABLE un error medio (MAE) <= 5% de la diferencia "
                "maxima de niveles observados. El informe lo evalua y marca CUMPLE / NO cumple, con "
                "el histograma y el mapa de residuos (que revela sesgos espaciales).")
+    d.h2("Pilot points: un mapa de K continuo")
+    d.p("La calibracion clasica ajusta una K por zona o capa. Con pilot points, PEST ajusta la "
+        "conductividad en una grilla de puntos repartidos por el dominio y el campo K(x, y) se "
+        "interpola entre ellos (kriging). El resultado es un mapa de K continuo y defendible "
+        "(practica GMDSI), en vez de un solo numero:")
+    d.code("yaku calibrate --project proyectos/mi_proyecto --pilot-points --pp-cada 5 --setup-pest")
+    d.p("El campo calibrado queda en k_field_capa{N}.csv; al copiarlo a datos/tablas/, el modelo "
+        "lo usa automaticamente en las corridas siguientes.")
+    d.h2("Multi-objetivo: niveles + caudal del rio")
+    d.p("Si tienes aforos del rio (caudal base), crea datos/tablas/aforos.csv (nombre, caudal_m3_d) "
+        "y la calibracion comparara ADEMAS el intercambio rio-acuifero simulado (SFR o RIV) contra "
+        "lo medido. Calibrar contra dos tipos de datos a la vez restringe mucho mejor el modelo.")
     d.p("En los ejemplos del repositorio, las observaciones se generan con un experimento gemelo "
         "(se muestrea el campo de cargas simulado y se le agrega un ruido pequeno): asi son "
         "consistentes con los bordes y la calibracion converge. Con datos reales, en cambio, las "
@@ -415,7 +449,7 @@ def build(out_docx: Path) -> Path:
     d.h1("Predicción y análisis de incertidumbre")
     d.p("El efecto del proyecto se evalua comparando un escenario con y sin proyecto (descenso de "
         "niveles por bombeo), y se cuantifica su incertidumbre:")
-    d.code("mfw predict --project proyectos/mi_proyecto --factor 1.5 --uncertainty 30")
+    d.code("yaku predict --project proyectos/mi_proyecto --factor 1.5 --uncertainty 30")
     d.image(IMG / "predicción" / "descenso_escenario.png",
             "Figura 6. Descenso de niveles del escenario con proyecto (con vs sin).", 4.4)
     d.image(IMG / "predicción" / "incertidumbre_montecarlo.png",
@@ -425,14 +459,14 @@ def build(out_docx: Path) -> Path:
     d.h1("Trayectorias y zonas de captura (MODPATH 7)")
     d.p("Con particulas reales (MODPATH 7) se obtienen las zonas de captura de los pozos y los "
         "tiempos de viaje (protección de pozos a 2/5/10 años):")
-    d.code("mfw pathlines --project proyectos/mi_proyecto --direction backward")
+    d.code("yaku pathlines --project proyectos/mi_proyecto --direction backward")
     d.image(IMG / "trayectorias" / "trayectorias_modpath7.png",
             "Figura 8. Trayectorias hacia los pozos (zona de captura) con MODPATH 7.", 4.6)
 
     # ---------- 14 ----------
     d.h1("Transporte e intrusión salina")
     d.p("Para contaminantes disueltos (modelo GWT) o intrusión salina costera (GWT + BUY):")
-    d.code("mfw transport --project <p>      # pluma de un soluto\nmfw salina    --project <p>      # cuña salina (densidad variable)")
+    d.code("yaku transport --project <p>      # pluma de un soluto\nmfw salina    --project <p>      # cuña salina (densidad variable)")
     d.image(IMG / "transporte" / "concentración_final.png",
             "Figura 9. Concentración final de un soluto (modelo de transporte GWT).", 5.2)
 
@@ -447,9 +481,9 @@ def build(out_docx: Path) -> Path:
         ["recarga_m_d", "La lluvia que entra por la superficie."],
         ["río / pozos", "Las celdas de río y los pozos, como objetos marcados."],
     ])
-    d.code("mfw view3d --project proyectos/mi_proyecto --exageration 20")
+    d.code("yaku view3d --project proyectos/mi_proyecto --exageration 20")
     d.info_box("Estratigrafia 3D asociada al modelo",
-               "Con el modelo multicapa (mfw mesh --run) los estratos se ven apilados y los coloreas "
+               "Con el modelo multicapa (yaku mesh --run) los estratos se ven apilados y los coloreas "
                "por litología (K) o por carga. Es la geología 3D conectada a los parámetros reales.")
 
     # ---------- 16 ----------
@@ -457,7 +491,7 @@ def build(out_docx: Path) -> Path:
     d.h1("El informe SEA: data-driven y editable")
     d.p("El informe se genera con DOS perfiles según a donde va: 'astm' (estándar internacional, "
         "7 etapas D5447/D5981) o 'sea' (contenidos mínimos SEIA, Guía SEA 2012).")
-    d.code("mfw report --project proyectos/mi_proyecto --perfil sea")
+    d.code("yaku report --project proyectos/mi_proyecto --perfil sea")
     d.p("Lo importante: el informe es DATA-DRIVEN. No es una plantilla con frases vacias: escribe "
         "con tus resultados reales la calibración (RMSE, observado vs simulado, residuos), el "
         "balance hidrico (global y por capa), los escenarios de descenso, la incertidumbre y los "
@@ -465,7 +499,7 @@ def build(out_docx: Path) -> Path:
     d.p("El informe incluye ademas: un mapa de planta del modelo conceptual (dominio, rio, pozos), "
         "la tabla de unidades geologicas con su K horizontal y coeficiente de infiltracion, la tabla "
         "de capas con K horizontal/vertical, mapas de carga con ISOPIEZAS etiquetadas en coordenadas "
-        "(Este/Norte, con norte y barra de escala), y -si corriste 'mfw mesh'- la vista 3D de la malla "
+        "(Este/Norte, con norte y barra de escala), y -si corriste 'yaku mesh'- la vista 3D de la malla "
         "Voronoi. Las unidades de cada tabla estan en la seccion 'Unidades de medida' de este tutorial.")
     d.h2("Rellenar lo cualitativo (informe/secciónes.md)")
     d.p("Lo que el modelo no puede escribir (modelo conceptual, antecedentes, limitaciones, "
@@ -486,6 +520,8 @@ def build(out_docx: Path) -> Path:
     d.image(SHOW / "descenso_escenario.png",
             "Figura 9. Descenso de niveles del escenario con proyecto.", 4.4)
     d.bullet("Caudal base (intercambio río-acuífero) y balance hidrico por capa / sector.")
+    d.bullet("Balance por ZONAS (estilo ZoneBudget): entradas/salidas por unidad geologica o por "
+             "sectores propios (zonas_balance.csv), con tabla y grafico en el informe.")
     d.bullet("Discrepancia del balance con criterio de aceptacion (<= 1%).")
     d.bullet("Mapas de carga con isopiezas etiquetadas, coordenadas y VECTORES DE FLUJO "
              "(direccion del agua subterranea), mas el mapa de recarga distribuida por unidad.")
@@ -501,7 +537,7 @@ def build(out_docx: Path) -> Path:
     # ---------- entregables ----------
     d.h1("El paquete de entregables SEIA")
     d.p("Un solo comando arma la carpeta lista para presentar al SEIA:")
-    d.code("mfw entregables --project proyectos/mi_proyecto --perfil sea")
+    d.code("yaku entregables --project proyectos/mi_proyecto --perfil sea")
     d.p("Crea informe/entregables_seia/ con todo ordenado:")
     d.table(["Contenido", "Que es"], [
         ["informe_<perfil>.pdf", "El informe data-driven completo."],
@@ -517,11 +553,11 @@ def build(out_docx: Path) -> Path:
 
     # ---------- 17 ----------
     d.h1("Cómo lo usa otra persona del equipo")
-    d.numbered("Instala una vez el entorno y corre mfw doctor (sección 4).")
-    d.numbered("Escribe 'mfw' para abrir el onboard y crear su proyecto (elige el tipo de estudio).")
-    d.numbered("Pone sus archivos crudos en datos/fuente/ y corre mfw prep (y mfw recarga si hay clima).")
-    d.numbered("Corre mfw check para ver que no falte nada; el onboard le sugiere el siguiente paso.")
-    d.numbered("Corre mfw pipeline, luego calibrate/predict, y genera el paquete con mfw entregables.")
+    d.numbered("Instala una vez el entorno y corre yaku doctor (sección 4).")
+    d.numbered("Escribe 'yaku' para abrir el onboard y crear su proyecto (elige el tipo de estudio).")
+    d.numbered("Pone sus archivos crudos en datos/fuente/ y corre yaku prep (y yaku recarga si hay clima).")
+    d.numbered("Corre yaku check para ver que no falte nada; el onboard le sugiere el siguiente paso.")
+    d.numbered("Corre yaku pipeline, luego calibrate/predict, y genera el paquete con yaku entregables.")
     d.info_box("Buena práctica", "Versiona cada proyecto con git (config.yaml + datos/ + informe/secciónes.md). "
                "El archivo resultados/inputs_metadata.json guarda versiones y un hash de los datos usados. "
                "Para clavar versiones identicas en otra máquina, usa environment-lock.yml.")
@@ -529,11 +565,11 @@ def build(out_docx: Path) -> Path:
     # ---------- 18 ----------
     d.h1("Si algo falla (problemas comunes)")
     d.table(["Síntoma", "Solución"], [
-        ["'mfw' no se reconoce", "Activa el entorno: conda activate modflow-workflow."],
+        ["'yaku' no se reconoce", "Activa el entorno: conda activate modflow-workflow."],
         ["No encuentra config.yaml", "Indica el proyecto: --project proyectos/<tu_proyecto>."],
-        ["'No existe HDS'", "Corre primero mfw run (o mfw pipeline)."],
-        ["'Faltan tablas minimas'", "Te falta un insumo obligatorio. Corre mfw check para ver cual."],
-        ["mp7 / triangle FALTA", "Instala binarios: get-modflow :flopy. Verifica con mfw doctor."],
+        ["'No existe HDS'", "Corre primero yaku run (o yaku pipeline)."],
+        ["'Faltan tablas minimas'", "Te falta un insumo obligatorio. Corre yaku check para ver cual."],
+        ["mp7 / triangle FALTA", "Instala binarios: get-modflow :flopy. Verifica con yaku doctor."],
         ["El modelo no converge", "Revisa bordes y geometria de capas; baja la complejidad del solver."],
         ["Advertencia de unidades", "Un valor parece fuera de rango (ej. K en m/s). Usa m/dia."],
     ])

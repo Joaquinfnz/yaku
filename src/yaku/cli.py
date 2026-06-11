@@ -1,4 +1,4 @@
-"""CLI `mfw` — interfaz de linea de comandos del workflow.
+"""CLI `yaku` — interfaz de linea de comandos del workflow.
 
 Subcomandos:
     new        Instancia un proyecto nuevo desde la plantilla.
@@ -40,7 +40,7 @@ def find_templates_dir() -> Path:
         if c.is_dir():
             return c
     raise FileNotFoundError(
-        "No se encontro templates/proyecto_base. Ejecuta mfw desde el repo del workflow."
+        "No se encontro templates/proyecto_base. Ejecuta yaku desde el repo del workflow."
     )
 
 
@@ -89,7 +89,7 @@ def cmd_new(args: argparse.Namespace) -> int:
     dest_root = Path(args.dest).resolve()
     dest = dest_root / args.nombre
     if dest.exists():
-        print(f"[mfw] ERROR: ya existe {dest}", file=sys.stderr)
+        print(f"[yaku] ERROR: ya existe {dest}", file=sys.stderr)
         return 1
 
     shutil.copytree(template, dest)
@@ -110,14 +110,14 @@ def cmd_new(args: argparse.Namespace) -> int:
     tipo = getattr(args, "tipo", "general")
     _aplicar_tipo(dest / "config.yaml", tipo)
 
-    print(f"[mfw] Proyecto creado: {dest} (tipo: {tipo})")
-    print(f"      Edita datos/tablas/*.csv y corre: mfw pipeline --project {dest}")
+    print(f"[yaku] Proyecto creado: {dest} (tipo: {tipo})")
+    print(f"      Edita datos/tablas/*.csv y corre: yaku pipeline --project {dest}")
 
     if args.git:
         import subprocess
 
         subprocess.run(["git", "init", "-q"], cwd=dest, check=False)
-        print("[mfw] Repositorio git inicializado en el proyecto.")
+        print("[yaku] Repositorio git inicializado en el proyecto.")
     return 0
 
 
@@ -141,7 +141,7 @@ def _load(project: str):
     target = Path(project)
     config_path = target / "config.yaml" if target.is_dir() else target
     if not config_path.exists():
-        print(f"[mfw] No se encontro config.yaml en '{project}'.", file=sys.stderr)
+        print(f"[yaku] No se encontro config.yaml en '{project}'.", file=sys.stderr)
         print("      Indica el proyecto con --project <carpeta>. Por ejemplo:", file=sys.stderr)
         disponibles = _listar_proyectos()
         if disponibles:
@@ -150,9 +150,9 @@ def _load(project: str):
                     rel = p.relative_to(Path.cwd())
                 except ValueError:
                     rel = p
-                print(f"        mfw {' '.join(sys.argv[1:2])} --project {rel}", file=sys.stderr)
+                print(f"        yaku {' '.join(sys.argv[1:2])} --project {rel}", file=sys.stderr)
         else:
-            print("        mfw new mi_proyecto      # crea uno nuevo primero", file=sys.stderr)
+            print("        yaku new mi_proyecto      # crea uno nuevo primero", file=sys.stderr)
         raise SystemExit(2)
 
     cfg = resolve_project_config(target)
@@ -191,7 +191,7 @@ def _validate(cfg, builder, logger) -> bool:
     faltan = revisar_insumos(cfg).faltan_para_correr
     if faltan:
         logger.error("insumos: faltan tablas minimas para modelar: %s", ", ".join(faltan))
-        logger.error("         revisa 'mfw check --project %s' (o genera tablas con 'mfw prep').",
+        logger.error("         revisa 'yaku check --project %s' (o genera tablas con 'yaku prep').",
                      cfg.project_dir.name)
         ok = False
     for e in builder.validate_input_data():
@@ -265,7 +265,7 @@ def cmd_report(args: argparse.Namespace) -> int:
 
     hds = cfg.resultados_dir / f"{cfg.model_name}.hds"
     if not hds.exists():
-        logger.error("No existe %s. Corre 'mfw run' primero.", hds)
+        logger.error("No existe %s. Corre 'yaku run' primero.", hds)
         return 1
     perfil = (args.perfil or cfg.perfil_informe).lower()
     formato = getattr(args, "formato", "pdf") or "pdf"
@@ -282,7 +282,7 @@ def cmd_entregables(args: argparse.Namespace) -> int:
 
     hds = cfg.resultados_dir / f"{cfg.model_name}.hds"
     if not hds.exists():
-        logger.error("No existe %s. Corre 'mfw run' primero.", hds)
+        logger.error("No existe %s. Corre 'yaku run' primero.", hds)
         return 1
     perfil = (args.perfil or cfg.perfil_informe).lower()
     dest = armar_entregables(cfg, perfil=perfil)
@@ -305,7 +305,7 @@ def cmd_calibrate(args: argparse.Namespace) -> int:
 
     hds = cfg.resultados_dir / f"{cfg.model_name}.hds"
     if not hds.exists():
-        logger.error("No existe %s. Corre 'mfw run' primero.", hds)
+        logger.error("No existe %s. Corre 'yaku run' primero.", hds)
         return 1
 
     # Etapa 4: evaluacion de ajuste (siempre)
@@ -314,25 +314,76 @@ def cmd_calibrate(args: argparse.Namespace) -> int:
     metrics = evaluate_fit(hds, obs_path, out_dir)
     logger.info("Ajuste evaluado:\n%s", metrics.to_string(index=False))
 
+    # Multi-objetivo: si hay aforos, compara el caudal base simulado (SFR/RIV)
+    aforos_csv = cfg.datos_dir / "aforos.csv"
+    if aforos_csv.exists():
+        import pandas as pd
+
+        from yaku.calibration.caudales import caudal_base_simulado
+
+        sim = caudal_base_simulado(cfg.resultados_dir / f"{cfg.model_name}.cbc")
+        if sim is not None:
+            q_obs = pd.read_csv(aforos_csv)["caudal_m3_d"].astype(float)
+            logger.info("Caudal base (%s): simulado %.1f m3/d | observado (aforos) %.1f m3/d.",
+                        sim["componente"], sim["acuifero_a_rio_m3d"], float(q_obs.mean()))
+        else:
+            logger.warning("Hay aforos.csv pero el modelo no tiene SFR ni RIV en el budget.")
+
     # Setup/corrida PEST++ formal (opcional)
     if args.setup_pest or args.run:
-        calib_path = cfg.calib_path("parametros", "datos/tablas/parametros_calibracion.csv")
         engine = args.engine
-        pst = setup_pest(
-            out_dir / "pest_control",
-            cfg.datos_dir,
-            obs_path,
-            calib_path,
-            max_params=args.max_params,
-            noptmax=args.noptmax,
-            engine=engine,
-        )
-        logger.info("Caso PEST++ generado: %s (motor %s)", pst, engine)
+        if getattr(args, "pilot_points", False):
+            from yaku.calibration.pilot_points import setup_pest_pilot_points
+
+            pst = setup_pest_pilot_points(
+                out_dir / "pest_control_pp",
+                cfg.datos_dir,
+                obs_path,
+                cada=args.pp_cada,
+                capa=args.pp_capa,
+                noptmax=args.noptmax,
+                engine=engine,
+            )
+            logger.info("Caso PEST++ pilot points generado: %s (motor %s)", pst, engine)
+        else:
+            calib_path = cfg.calib_path("parametros", "datos/tablas/parametros_calibracion.csv")
+            pst = setup_pest(
+                out_dir / "pest_control",
+                cfg.datos_dir,
+                obs_path,
+                calib_path,
+                max_params=args.max_params,
+                noptmax=args.noptmax,
+                engine=engine,
+            )
+            logger.info("Caso PEST++ generado: %s (motor %s)", pst, engine)
         if args.run:
             logger.info("Ejecutando %s ... (puede tardar)", engine)
             ok = run_pest(pst, engine=engine, timeout=args.timeout)
             logger.info("PEST++ %s", "OK" if ok else "fallo (revisa el .rec)")
             return 0 if ok else 1
+    return 0
+
+
+def cmd_clima(args: argparse.Namespace) -> int:
+    cfg, logger = _load(args.project)
+    from yaku.prep.clima_fuentes import clima_desde_fuente
+
+    out = cfg.project_dir / "datos" / "fuente" / "clima.csv"
+    try:
+        clima_desde_fuente(
+            out,
+            fuente=args.fuente,
+            precip=Path(args.precip),
+            temp=Path(args.temp) if args.temp else None,
+            et0=Path(args.et0) if args.et0 else None,
+            estacion=args.estacion,
+        )
+    except (ValueError, FileNotFoundError) as exc:
+        logger.error("No se pudo convertir la fuente de clima: %s", exc)
+        return 1
+    logger.info("Listo: %s. Ahora corre 'yaku recarga --project %s' (balance de suelo).",
+                out, args.project)
     return 0
 
 
@@ -422,7 +473,7 @@ def cmd_predict(args: argparse.Namespace) -> int:
 
     hds = cfg.resultados_dir / f"{cfg.model_name}.hds"
     if not hds.exists():
-        logger.error("No existe %s. Corre 'mfw run' primero.", hds)
+        logger.error("No existe %s. Corre 'yaku run' primero.", hds)
         return 1
     out_dir = cfg.resultados_dir / "prediccion"
 
@@ -524,7 +575,7 @@ def cmd_prep(args: argparse.Namespace) -> int:
         cellsize=args.cellsize, nlay=args.nlay, espesor=args.espesor,
     )
     logger.info("Preparacion lista. Grilla: %s", resumen.get("grilla"))
-    logger.info("Revisa y edita datos/tablas/*.csv; luego: mfw pipeline --project %s", args.project)
+    logger.info("Revisa y edita datos/tablas/*.csv; luego: yaku pipeline --project %s", args.project)
     return 0
 
 
@@ -561,15 +612,15 @@ def cmd_view3d(args: argparse.Namespace) -> int:
     cfg, logger = _load(args.project)
     from yaku.viz import plots_3d
 
-    # --mesh: ver el modelo Voronoi/DISV generado por 'mfw mesh --run'
+    # --mesh: ver el modelo Voronoi/DISV generado por 'yaku mesh --run'
     if args.mesh:
         workspace = cfg.resultados_dir / "malla"
         model_name = "voronoi"
-        sugerencia = "mfw mesh --project <p> --run"
+        sugerencia = "yaku mesh --project <p> --run"
     else:
         workspace = cfg.resultados_dir
         model_name = cfg.model_name
-        sugerencia = "mfw run --project <p>"
+        sugerencia = "yaku run --project <p>"
 
     hds = workspace / f"{model_name}.hds"
     if not hds.exists():
@@ -592,7 +643,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
 
     from yaku.binaries import resolve_exe
 
-    print("mfw doctor — chequeo del entorno\n")
+    print("yaku doctor — chequeo del entorno\n")
     ok = True
 
     binarios = {
@@ -667,17 +718,17 @@ def cmd_datos(args: argparse.Namespace) -> int:
                         ui.print(f"  (ya existía {ins.tabla})")
             else:  # dominio, dem, pozos.shp, geologia, clima...
                 if getattr(ins, "fuente", None):       # archivo exacto (dem.tif, clima.csv, caudales.csv)
-                    archivo, paso = ins.fuente, ("mfw recarga" if ins.fuente == "clima.csv" else "mfw prep")
+                    archivo, paso = ins.fuente, ("yaku recarga" if ins.fuente == "clima.csv" else "yaku prep")
                 else:                                    # capa vectorial
-                    archivo, paso = f"{ins.vector}.shp", "mfw prep"
+                    archivo, paso = f"{ins.vector}.shp", "yaku prep"
                 ui.print(f"  • {ins.clave}: pon '{archivo}' en datos/fuente/ y luego corre '{paso}'.")
 
     rep2 = revisar_insumos(cfg)
     if rep2.ok_minimos:
-        ui.print("\n=> Mínimos completos. Edita las plantillas con tus datos y corre 'mfw run'.")
+        ui.print("\n=> Mínimos completos. Edita las plantillas con tus datos y corre 'yaku run'.")
     else:
         ui.print(f"\n=> Aún faltan tablas mínimas: {', '.join(rep2.faltan_para_correr)}. "
-                 "Vuelve a correr 'mfw datos' o créalas a mano.")
+                 "Vuelve a correr 'yaku datos' o créalas a mano.")
     return 0
 
 
@@ -694,14 +745,14 @@ def cmd_check(args: argparse.Namespace) -> int:
 
 
 def cmd_onboard(args: argparse.Namespace) -> int:
-    """Onboard: pantalla de inicio guiada (la misma que abre `mfw` sin argumentos)."""
+    """Onboard: pantalla de inicio guiada (la misma que abre `yaku` sin argumentos)."""
     from yaku.tui import run_home
 
     return run_home()
 
 
 def cmd_todo(args: argparse.Namespace) -> int:
-    print(f"[mfw] Subcomando '{args.command}' se implementa en una fase posterior.", file=sys.stderr)
+    print(f"[yaku] Subcomando '{args.command}' se implementa en una fase posterior.", file=sys.stderr)
     return 1
 
 
@@ -710,7 +761,7 @@ def cmd_todo(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="mfw",
+        prog="yaku",
         description="Workflow replicable de modelacion de aguas subterraneas (MODFLOW 6 + FloPy)",
     )
     parser.add_argument("--version", action="version", version=f"yaku {__version__}")
@@ -766,6 +817,10 @@ def build_parser() -> argparse.ArgumentParser:
                        help="Maximo de parametros del CSV a calibrar (toma los primeros N)")
     p_cal.add_argument("--noptmax", type=int, default=3, help="Iteraciones PEST++")
     p_cal.add_argument("--timeout", type=int, default=None, help="Timeout en segundos para PEST++")
+    p_cal.add_argument("--pilot-points", action="store_true",
+                       help="Parametriza K con pilot points (kriging) en vez de zonas/multiplicadores")
+    p_cal.add_argument("--pp-cada", type=int, default=5, help="Un pilot point cada N celdas (default 5)")
+    p_cal.add_argument("--pp-capa", type=int, default=1, help="Capa cuya K se parametriza (default 1)")
     p_cal.set_defaults(func=cmd_calibrate)
 
     p_pred = sub.add_parser("predict", help="Prediccion: escenario con/sin proyecto + incertidumbre")
@@ -824,6 +879,16 @@ def build_parser() -> argparse.ArgumentParser:
                        help="Escribe tambien stress_periods.csv alineado (corre la serie como transiente)")
     p_rec.set_defaults(func=cmd_recarga)
 
+    p_cli = sub.add_parser("clima", help="Convierte series CR2 / CAMELS-CL al clima.csv del proyecto")
+    add_project(p_cli)
+    p_cli.add_argument("--fuente", choices=["cr2", "camels"], required=True,
+                       help="cr2 (Explorador Climatico) | camels (CAMELS-CL)")
+    p_cli.add_argument("--precip", required=True, help="Archivo con la serie de precipitacion")
+    p_cli.add_argument("--temp", default=None, help="Archivo con la serie de temperatura (opcional)")
+    p_cli.add_argument("--et0", default=None, help="Archivo con la serie de ET0 (opcional)")
+    p_cli.add_argument("--estacion", default=None, help="gauge_id de la cuenca (CAMELS-CL)")
+    p_cli.set_defaults(func=cmd_clima)
+
     p_idx = sub.add_parser("indices", help="Indices clima-hidrogeologia (SPI/SPEI, aridez, recarga, flujo base, desfase napa-clima)")
     add_project(p_idx)
     p_idx.set_defaults(func=cmd_indices)
@@ -839,7 +904,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_project(p_v3d)
     p_v3d.add_argument("--exageration", type=float, default=20.0, help="Exageracion vertical")
     p_v3d.add_argument("--mesh", action="store_true",
-                       help="Ver el modelo Voronoi/DISV (de 'mfw mesh --run') en vez del modelo regular")
+                       help="Ver el modelo Voronoi/DISV (de 'yaku mesh --run') en vez del modelo regular")
     p_v3d.set_defaults(func=cmd_view3d)
 
     p_datos = sub.add_parser("datos", help="Asistente de datos: crea plantillas editables de lo que falta")

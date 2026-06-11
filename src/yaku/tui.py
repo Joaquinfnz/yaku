@@ -1,8 +1,8 @@
-"""Terminal guiada de yaku (`mfw tui`).
+"""Terminal guiada de yaku (`yaku tui`).
 
 Un menu interactivo que envuelve los subcomandos de la CLI para quien no se sabe
 los comandos de memoria: detecta los proyectos, muestra el estado del entorno
-(equivalente a `mfw doctor` en compacto), guia las etapas de modelacion en el
+(equivalente a `yaku doctor` en compacto), guia las etapas de modelacion en el
 orden ASTM y, despues de cada accion, dice donde quedaron las salidas.
 
 Diseno:
@@ -19,7 +19,6 @@ import argparse
 import importlib.util
 import sys
 from pathlib import Path
-from typing import Callable
 
 from yaku import __version__
 
@@ -163,7 +162,7 @@ def _mostrar_entorno(ui: UI) -> None:
             ui.print(f"  [{'OK ' if ok else 'FALTA'}] {nombre:12s} {desc}")
     faltan = [n for n, ok, _ in filas if not ok]
     if faltan:
-        ui.print(f"Sugerencia: faltan {', '.join(faltan)} -> revisa 'mfw doctor' / get-modflow :flopy")
+        ui.print(f"Sugerencia: faltan {', '.join(faltan)} -> revisa 'yaku doctor' / get-modflow :flopy")
 
 
 # ---------------------------------------------------------------------------
@@ -178,7 +177,7 @@ def _seleccionar_proyecto(ui: UI, inicial: str | None) -> str | None:
     proyectos = _listar_proyectos()
     if not proyectos:
         ui.print("No se detectaron proyectos (carpetas con config.yaml en proyectos/ o examples/).")
-        return ui.text("Escribe la ruta a un proyecto (o Enter para crear uno con 'mfw new'):") or None
+        return ui.text("Escribe la ruta a un proyecto (o Enter para crear uno con 'yaku new'):") or None
 
     opciones = []
     for p in proyectos:
@@ -524,17 +523,17 @@ _ECUACIONES = "q = -K·∇h      Ss·∂h/∂t = ∇·(K·∇h) + W"
 
 
 def _titulo_ascii() -> str:
-    """Titulo 'mfw' en ASCII (figlet 'slant' si esta pyfiglet; si no, texto simple)."""
+    """Titulo 'yaku' en ASCII (figlet 'slant' si esta pyfiglet; si no, texto simple)."""
     if _HAS_FIGLET:
         try:
-            return pyfiglet.figlet_format("mfw", font="slant").rstrip("\n")
+            return pyfiglet.figlet_format("yaku", font="slant").rstrip("\n")
         except Exception:  # pragma: no cover
             pass
     return "m f w o r k f l o w"
 
 
 def _banner(ui: UI) -> None:
-    """Banner centrado: montañita sobre la napa + logo 'mfw' al medio + ecuaciones."""
+    """Banner centrado: montañita sobre la napa + logo 'yaku' al medio + ecuaciones."""
     titulo = _titulo_ascii()
     version = f"v{__version__}   ·   Autor: {_AUTOR}"
     if ui.console:
@@ -547,7 +546,7 @@ def _banner(ui: UI) -> None:
         cuerpo.append(_SUBTITULO + "\n", style="white")
         cuerpo.append(_ECUACIONES + "\n", style="cyan")
         cuerpo.append(version, style="dim")
-        ui.console.print(Panel(cuerpo, border_style="cyan", title="mfw · onboard"))
+        ui.console.print(Panel(cuerpo, border_style="cyan", title="yaku · onboard"))
     else:
         ui.print(_MONTANA)
         ui.print(titulo)
@@ -574,7 +573,7 @@ def _crear_proyecto(ui: UI) -> str | None:
 
 
 def run_home() -> int:
-    """Pantalla de inicio de mfw: banner + menu principal (nuevo / abrir / entorno)."""
+    """Pantalla de inicio de yaku: banner + menu principal (nuevo / abrir / entorno)."""
     from yaku import cli
 
     ui = UI()
@@ -584,7 +583,7 @@ def run_home() -> int:
         accion = ui.select("¿Qué quieres hacer?", [
             ("Crear un proyecto nuevo", "nuevo"),
             ("Abrir un proyecto existente", "abrir"),
-            ("Revisar el entorno (mfw doctor)", "doctor"),
+            ("Revisar el entorno (yaku doctor)", "doctor"),
             ("Ver los comandos disponibles (ayuda)", "ayuda"),
             ("Salir", "salir"),
         ])
@@ -611,12 +610,12 @@ def run_tui(initial_project: str | None = None) -> int:
         "Terminal guiada de yaku.\n"
         "Te muestra el estado del entorno, eliges un proyecto y corres las etapas\n"
         "de modelacion en orden. Cada etapa dice que hace y que datos necesita.",
-        titulo="mfw tui",
+        titulo="yaku tui",
     )
     _mostrar_entorno(ui)
     project = _seleccionar_proyecto(ui, initial_project)
     if not project:
-        ui.print("Sin proyecto. Crea uno con: mfw new <nombre>")
+        ui.print("Sin proyecto. Crea uno con: yaku new <nombre>")
         return 0
     stages = _build_stages()
     _menu(ui, project, stages)

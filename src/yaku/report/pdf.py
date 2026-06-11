@@ -25,10 +25,10 @@ import matplotlib.pyplot as plt
 try:
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4
-    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.units import inch
     from reportlab.platypus import Image as RLImage
-    from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table
 
     from yaku.report import tema
 
@@ -419,6 +419,18 @@ def _bloques_seccion(titulo_sec: str, res, styles, guia: str, textos: dict | Non
                 out.append(Spacer(1, 0.08 * inch))
                 out.append(Paragraph("Balance por capa / sector (m³/día)", styles["Heading4"]))
                 out.append(_df_tabla(res.balance_por_capa, max_rows=30))
+            bz = getattr(res, "balance_por_zonas", None)
+            if bz and bz.get("df") is not None:
+                out.append(Spacer(1, 0.08 * inch))
+                out.append(Paragraph("Balance por zonas (m³/día)", styles["Heading4"]))
+                out.append(Paragraph(
+                    "Fuentes y sumideros por zona del acuífero (unidades geológicas o sectores "
+                    "definidos en zonas_balance.csv), estilo ZoneBudget. No incluye el "
+                    "intercambio lateral entre zonas.", styles["BodyText"]))
+                out.append(_df_tabla(bz["df"], max_rows=40))
+                if bz.get("figura"):
+                    out.extend(_imagen(bz["figura"], styles,
+                                       titulo="Entradas y salidas por zona y componente"))
             ic = res.indices_clima
             if ic and ic.get("tabla") is not None and not ic["tabla"].empty:
                 out.append(Spacer(1, 0.12 * inch))
@@ -726,7 +738,7 @@ def generar_informe(cfg, output_path: Path, perfil: str = "astm", formato: str =
     res = recolectar_resultados(cfg)
     if res.head is None:
         raise FileNotFoundError(
-            f"No hay cargas en {cfg.resultados_dir} (corre 'mfw run' antes del informe)."
+            f"No hay cargas en {cfg.resultados_dir} (corre 'yaku run' antes del informe)."
         )
     textos = leer_secciones_md(cfg.informe_dir / "secciones.md")
     if formato == "docx":

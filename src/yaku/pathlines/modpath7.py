@@ -16,7 +16,6 @@ from pathlib import Path
 
 import flopy
 import matplotlib
-import numpy as np
 import pandas as pd
 
 matplotlib.use("Agg")
@@ -36,7 +35,7 @@ def _load_gwf(workspace: Path, model_name: str):
 
 def _well_nodes(gwf, data_dir: Path) -> list[int]:
     """Node numbers (0-based) de las celdas de pozo, para sembrar particulas."""
-    nlay, nrow, ncol = gwf.modelgrid.nlay, gwf.modelgrid.nrow, gwf.modelgrid.ncol
+    nrow, ncol = gwf.modelgrid.nrow, gwf.modelgrid.ncol
     pozos = data_dir / "pozos.csv"
     nodes: list[int] = []
     if pozos.exists():

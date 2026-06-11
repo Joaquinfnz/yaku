@@ -14,9 +14,9 @@ Submodulos principales:
     viz          Visualizaciones 2D / 3D.
     report       Generacion de informe PDF (perfiles astm | sea).
     config       Carga y validacion de config.yaml de proyecto.
-    cli          Interfaz de linea de comandos `mfw`.
+    cli          Interfaz de linea de comandos `yaku`.
 """
 
-__version__ = "2.0.0"
+__version__ = "1.0.0b1"
 
 __all__ = ["__version__"]

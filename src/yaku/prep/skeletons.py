@@ -3,7 +3,7 @@
 
 Cada plantilla trae el encabezado correcto, las **unidades** y una o dos filas de
 ejemplo realistas, para que el usuario solo reemplace los valores. Las usa el
-asistente `mfw datos`. Unidades: longitud m, conductividad m/día, caudal m³/día,
+asistente `yaku datos`. Unidades: longitud m, conductividad m/día, caudal m³/día,
 tiempo días, conductancia m²/día.
 """
 

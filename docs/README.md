@@ -1,16 +1,15 @@
-# Documentación de yaku
+# Documentación de YAKU-MODFLOW
 
-Índice de la documentación del proyecto.
+Índice de la documentación del proyecto (paquete y comando: `yaku`).
 
 ## Guías
 | Archivo | Qué es |
 |---------|--------|
 | [arquitectura.md](arquitectura.md) | Estructura del paquete y los dos motores (simple / mfsetup). |
 | [instalacion_arm64.md](instalacion_arm64.md) | Instalación en macOS Apple Silicon. |
-| [preparacion_datos.md](preparacion_datos.md) | Qué datos entregar y en qué formato (DEM, shapefile, CSV). |
+| [preparacion_datos.md](preparacion_datos.md) | Qué datos entregar y en qué formato (DEM, shapefile, CSV, clima CR2/CAMELS). |
 | [Guia_MODFLOW_FloPy_DesdeCero.md](Guia_MODFLOW_FloPy_DesdeCero.md) | Guía conceptual desde cero. |
-| [plan_mejoras_v2.md](plan_mejoras_v2.md) | Plan de mejoras (Voronoi, MODPATH 7, etc.). |
-| [roadmap.md](roadmap.md) | Integraciones futuras (recarga climática CR2/DGA, SFR/MAW, pilot points, etc.). |
+| [roadmap.md](roadmap.md) | Integraciones futuras (MAW/LAK/MVR, XT3D, data-worth, etc.). |
 
 ## Estándares (ASTM / SEIA)
 | Archivo | Qué es |
@@ -19,11 +18,11 @@
 | [astm/mapeo_sea.md](astm/mapeo_sea.md) | Mapeo etapas ASTM ↔ contenidos mínimos SEIA (Guía SEA 2012). |
 | [alineacion_sea.md](alineacion_sea.md) | Matriz MODFLOW ↔ Guía SEA ↔ ciencia ↔ yaku (qué tiene y qué falta). |
 
-## Ejemplo real
-| Archivo | Qué es |
+## Ejemplos
+| Carpeta | Qué es |
 |---------|--------|
-| [ejemplo_regional.md](ejemplo_regional.md) | Caso real (cuenca andina, datos de Hatari Labs) corrido end-to-end con salidas reales. |
-| `ejemplo_regional/` | Figuras reales del ejemplo (malla Voronoi, 3D, calibración…). |
+| `../examples/caso_demo/` | Demo mínimo (2 capas, SFR, pozos) para probar el pipeline completo. |
+| `../examples/ejemplo_clima/` | Caso end-to-end TRANSIENTE clima–hidrogeología (recarga diaria 3 años, calibración, informe). |
 
 ## Carpetas internas
 - `_tools/` — scripts auxiliares (p.ej. `generar_tutorial_docx.py`, que produce el tutorial Word/PDF).
